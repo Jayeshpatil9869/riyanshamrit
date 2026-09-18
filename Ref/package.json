@@ -1,0 +1,13 @@
+{
+  "name": "kanva-website",
+  "version": "1.0.0",
+  "description": "Kanva - Luxury Botanical Skincare & Wellness Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["kanva", "framer", "ecommerce", "luxury", "skincare"],
+  "author": "",
+  "license": "ISC"
+}
