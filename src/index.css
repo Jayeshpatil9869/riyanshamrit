@@ -290,15 +290,15 @@
   --font-body: 'DM Sans', 'DM Sans Placeholder', 'Figtree', 'Inter', sans-serif;
   --font-mono: 'Geist', 'Geist Placeholder', 'Space Mono', monospace;
 
-  /* Font Sizes & Responsive Fluid Scales */
-  --font-size-display-h1: clamp(2.5rem, 5.5vw, 4.5rem);  /* 40px -> 72px */
-  --font-size-h2: clamp(1.875rem, 3.8vw, 3rem);          /* 30px -> 48px */
-  --font-size-h3: clamp(1.5rem, 2.5vw, 2rem);             /* 24px -> 32px */
-  --font-size-h4: clamp(1.25rem, 1.8vw, 1.5rem);          /* 20px -> 24px */
-  --font-size-body-lg: 1.125rem;                          /* 18px */
-  --font-size-body-md: 0.9375rem;                         /* 15px */
-  --font-size-body-sm: 0.8125rem;                         /* 13px */
-  --font-size-overline: 0.6875rem;                        /* 11px */
+  /* Font Sizes & Responsive Fluid Scales (Scaled 1.1x for Editorial Impact) */
+  --font-size-display-h1: clamp(2.75rem, 6vw, 5rem);     /* 44px -> 80px */
+  --font-size-h2: clamp(2.05rem, 4.2vw, 3.3rem);         /* 33px -> 53px */
+  --font-size-h3: clamp(1.65rem, 2.75vw, 2.2rem);        /* 26px -> 35px */
+  --font-size-h4: clamp(1.35rem, 2vw, 1.65rem);          /* 22px -> 26px */
+  --font-size-body-lg: 1.225rem;                         /* 20px */
+  --font-size-body-md: 1.03rem;                          /* 16.5px */
+  --font-size-body-sm: 0.895rem;                         /* 14.3px */
+  --font-size-overline: 0.75rem;                         /* 12px */
 
   --font-line-height-tight: 1.05;
   --font-line-height-heading: 1.15;
@@ -311,10 +311,10 @@
   /* ------------------------------------------------------------------------
      5. SPACING & CONTAINER SCALES
      ------------------------------------------------------------------------ */
-  --container-max-width: 1360px;
-  --container-gutter-desktop: 64px;
-  --container-gutter-tablet: 32px;
-  --container-gutter-mobile: 20px;
+  --container-max-width: 1440px;
+  --container-gutter-desktop: 48px;
+  --container-gutter-tablet: 28px;
+  --container-gutter-mobile: 18px;
 
   --section-padding-desktop: 120px;
   --section-padding-tablet: 80px;
@@ -377,12 +377,18 @@ html {
   background-color: var(--token-bg-canvas);
   color: var(--token-text-primary);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 17.6px; /* Exact 110% root scale (16px * 1.10 = 17.6px) */
   line-height: var(--font-line-height-body);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 16px; /* Standard comfortable scale on mobile */
+  }
 }
 
 body {
