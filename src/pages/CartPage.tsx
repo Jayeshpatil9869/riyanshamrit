@@ -30,21 +30,21 @@ export const CartPage: React.FC = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="w-full py-24">
+      <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
         <div className="kanva-container max-w-lg text-center space-y-4">
           <div className="w-16 h-16 rounded-full bg-[#e8e8e1] flex items-center justify-center mx-auto text-[#1a1c18]/40 font-serif text-2xl">
             ∅
           </div>
           <h1 className="font-serif text-3xl text-[#1a1c18]">Your Shopping Bag is Empty</h1>
           <p className="text-xs sm:text-sm text-[#1a1c18]/60 leading-relaxed font-body">
-            You have not added any classical Ayurvedic formulations to your bag yet. Explore our 20 signature remedies prepared in Sangamner.
+            You have not added any classical Ayurvedic formulations to your bag yet. Explore our signature botanical remedies.
           </p>
           <div className="pt-2">
             <button
               onClick={() => navigate('/store')}
               className="px-8 py-3 bg-[#1a1c18] text-white rounded-full text-xs font-medium hover:bg-[#3c4433] transition-colors"
             >
-              Browse All 20 Formulations
+              Browse All Formulations
             </button>
           </div>
         </div>
@@ -53,7 +53,7 @@ export const CartPage: React.FC = () => {
   }
 
   return (
-    <div className="w-full pt-8 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container">
         {/* Header */}
         <div className="py-8 border-b border-[rgba(26,28,24,0.08)]">

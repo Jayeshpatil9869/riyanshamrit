@@ -91,7 +91,7 @@ export const ProductDetailPage: React.FC = () => {
   ).slice(0, 4);
 
   return (
-    <div className="w-full pt-6 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container">
         {/* Breadcrumb Navigation */}
         <nav className="flex items-center gap-2 text-xs text-[#1a1c18]/50 py-4 font-mono">

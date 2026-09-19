@@ -14,6 +14,7 @@ import { SearchModal } from './components/SearchModal';
 import { QuickViewModal } from './components/QuickViewModal';
 import { ToastContainer } from './components/ToastContainer';
 import { SmoothScroll } from './components/motion/SmoothScroll';
+import { PageTransition } from './components/motion/PageTransition';
 
 // Route Pages
 import { HomePage } from './pages/HomePage';
@@ -32,11 +33,6 @@ import { ShippingPolicyPage, RefundPolicyPage, PrivacyPolicyPage, TermsPage } fr
 
 const AppContent: React.FC = () => {
   const { currentPath, isProductDetail } = useRouter();
-
-  // Scroll to top on route change
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPath]);
 
   const renderActiveRoute = () => {
     if (isProductDetail) {
@@ -92,9 +88,11 @@ const AppContent: React.FC = () => {
       {/* Sticky Blurred Global Navigation */}
       <Navbar />
 
-      {/* Main Routed Page Content */}
-      <main className="flex-1 w-full">
-        {renderActiveRoute()}
+      {/* Main Routed Page Content (Opaque curtain with peel shadow above fixed footer) */}
+      <main className="flex-1 w-full relative z-10 min-h-screen bg-[#f2f2ef] shadow-[0_30px_60px_rgba(0,0,0,0.14)]">
+        <PageTransition>
+          {renderActiveRoute()}
+        </PageTransition>
       </main>
 
       {/* Global Interactive Overlays */}
@@ -104,7 +102,7 @@ const AppContent: React.FC = () => {
       <QuickViewModal />
       <ToastContainer />
 
-      {/* Editorial Footer */}
+      {/* Curtain Footer Reveal */}
       <Footer />
     </div>
   );

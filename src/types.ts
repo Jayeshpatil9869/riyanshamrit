@@ -39,6 +39,7 @@ export interface Product {
   inStock: boolean;
   featured?: boolean;
   bestseller?: boolean;
+  isNew?: boolean;
   description: string;
   keyBenefits: string[];
   ingredients: Ingredient[];

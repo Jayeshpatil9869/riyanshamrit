@@ -17,7 +17,7 @@ export const OrdersPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full pt-8 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container">
         {/* Header */}
         <div className="py-8 sm:py-12 border-b border-[rgba(26,28,24,0.08)] flex flex-col sm:flex-row sm:items-end justify-between gap-4">

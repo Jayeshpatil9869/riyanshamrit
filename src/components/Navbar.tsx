@@ -22,9 +22,7 @@ interface NavLinkItem {
 
 const navLinks: NavLinkItem[] = [
   { label: 'Shop', href: '/store', isRouterLink: true, hasDropdown: true, dropdownType: 'shop' },
-  { label: 'Collections', href: '/store', isRouterLink: true, hasDropdown: true, dropdownType: 'collections' },
   { label: 'About', href: '/about', isRouterLink: true },
-  { label: 'Journal', href: '/store', isRouterLink: true },
   { label: 'Contact', href: '/contact', isRouterLink: true },
 ];
 
@@ -186,22 +184,22 @@ export const Navbar: React.FC = () => {
               to="/"
               className="group flex flex-col items-center select-none"
             >
-              <span className="font-serif text-[22px] sm:text-[26px] tracking-[-0.03em] font-normal uppercase text-[#1a1c18] transition-opacity group-hover:opacity-85 whitespace-nowrap">
+              <span className="font-serif text-[18px] xs:text-[20px] sm:text-[24px] lg:text-[26px] tracking-[-0.03em] font-normal uppercase text-[#1a1c18] transition-opacity group-hover:opacity-85 whitespace-nowrap">
                 RIYANSH AMRIT
               </span>
-              <span className="text-[8px] tracking-[0.25em] uppercase font-sans -mt-1 text-[#757d5c]">
+              <span className="text-[9.5px] xs:text-[10px] sm:text-[11px] tracking-[0.22em] sm:tracking-[0.25em] uppercase font-sans font-semibold mt-0.5 sm:mt-0 text-[#4e583c]">
                 Ayurvedic Botanicals
               </span>
             </Link>
           </div>
 
           {/* ================= RIGHT: UTILITIES & ACTIONS ================= */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 md:gap-3">
-            {/* Account Icon */}
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+            {/* Account Icon (Desktop & Tablet) */}
             <Link
               to={user ? '/account/orders' : '/login'}
               aria-label="Account"
-              className="p-2 rounded-full hover:bg-[#f4f4f1] text-[#1a1c18] transition-colors flex items-center justify-center cursor-pointer"
+              className="hidden sm:flex p-2 rounded-full hover:bg-[#f4f4f1] text-[#1a1c18] transition-colors items-center justify-center cursor-pointer"
             >
               <User size={18} strokeWidth={1.8} />
             </Link>
@@ -210,7 +208,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setIsSearchOpen(true)}
               aria-label="Search"
-              className="p-2 rounded-full hover:bg-[#f4f4f1] text-[#1a1c18] transition-colors cursor-pointer"
+              className="hidden xs:flex p-2 rounded-full hover:bg-[#f4f4f1] text-[#1a1c18] transition-colors cursor-pointer"
             >
               <Search size={18} strokeWidth={1.8} />
             </button>
@@ -219,11 +217,11 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setIsWishlistDrawerOpen(true)}
               aria-label="Wishlist"
-              className="relative p-2 rounded-full hover:bg-[#f4f4f1] text-[#1a1c18] transition-colors cursor-pointer"
+              className="relative p-1.5 sm:p-2 rounded-full hover:bg-[#f4f4f1] text-[#1a1c18] transition-colors cursor-pointer"
             >
               <Heart size={18} strokeWidth={1.8} />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-[#757d5c] text-white text-[9px] font-bold flex items-center justify-center rounded-full animate-scale">
+                <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#757d5c] text-white text-[8px] sm:text-[9px] font-bold flex items-center justify-center rounded-full">
                   {wishlistCount}
                 </span>
               )}
@@ -233,25 +231,25 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setIsCartDrawerOpen(true)}
               aria-label="Cart"
-              className="relative flex items-center gap-2 bg-[#1a1c18] hover:bg-[#3c4433] text-white px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all hover:scale-[1.02] active:scale-[0.96] cursor-pointer shadow-xs"
+              className="relative flex items-center gap-1.5 sm:gap-2 bg-[#1a1c18] hover:bg-[#3c4433] text-white px-2.5 sm:px-3.5 py-1.5 rounded-full text-xs sm:text-[13px] font-medium transition-all hover:scale-[1.02] active:scale-[0.96] cursor-pointer shadow-xs"
             >
-              <ShoppingBag size={16} strokeWidth={2} />
+              <ShoppingBag size={15} strokeWidth={2} className="shrink-0" />
               <span className="font-semibold text-xs">{cartCount}</span>
             </button>
 
             {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden flex flex-col justify-center items-center w-9 h-9 rounded-full bg-[#f4f4f1] text-[#1a1c18] hover:bg-[#eaeae5] focus:outline-none ml-1 cursor-pointer"
+              className="lg:hidden flex flex-col justify-center items-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#f4f4f1] text-[#1a1c18] hover:bg-[#eaeae5] focus:outline-none ml-0.5 cursor-pointer"
               aria-label="Toggle Menu"
             >
               <span
-                className={`block h-0.5 w-4 bg-[#1a1c18] rounded transition-all duration-300 ease-out ${
+                className={`block h-0.5 w-3.5 sm:w-4 bg-[#1a1c18] rounded transition-all duration-300 ease-out ${
                   mobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-0.5'
                 }`}
               />
               <span
-                className={`block h-0.5 w-4 bg-[#1a1c18] rounded transition-all duration-300 ease-out ${
+                className={`block h-0.5 w-3.5 sm:w-4 bg-[#1a1c18] rounded transition-all duration-300 ease-out ${
                   mobileMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-0.5'
                 }`}
               />
@@ -282,7 +280,6 @@ export const Navbar: React.FC = () => {
                 {[
                   { label: 'Home', path: '/' },
                   { label: 'Shop All Formulations', path: '/store' },
-                  { label: 'Collections', path: '/store' },
                   { label: 'About Riyansh Amrit', path: '/about' },
                   { label: 'Contact & Support', path: '/contact' },
                   { label: 'Saved Wishlist', path: '/wishlist' },

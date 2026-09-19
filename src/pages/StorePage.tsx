@@ -63,14 +63,11 @@ export const StorePage: React.FC = () => {
     searchQuery.trim().length > 0;
 
   return (
-    <div className="w-full pt-6 pb-20">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-20">
       <div className="kanva-container">
         {/* Editorial Header */}
         <div className="pt-6 pb-10 sm:py-12 border-b border-[rgba(26,28,24,0.08)]">
           <div className="max-w-3xl">
-            <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-3">
-              THE SANGAMNER APOTHECARY
-            </span>
             <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-[#1a1c18] font-normal tracking-[-0.03em] leading-[1.08]">
               <span>Complete Skincare </span>
               <span className="italic font-normal text-[#3c4433]">Formulations</span>
@@ -84,34 +81,36 @@ export const StorePage: React.FC = () => {
         {/* Filter Controls Bar (Kanva Integrated Minimalist Style) */}
         <div className="py-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[rgba(26,28,24,0.08)]">
           {/* Categories Pill Scroller with AnimatedTabs */}
-          <div className="overflow-x-auto no-scrollbar py-1">
-            <AnimatedTabs
-              tabs={CATEGORIES.map((c) => ({
-                id: c,
-                label: c,
-                count: c === 'All Products' ? RIYANSH_PRODUCTS.length : RIYANSH_PRODUCTS.filter((p) => p.category === c).length
-              }))}
-              activeTab={selectedCategory}
-              onChange={setSelectedCategory}
-            />
+          <div className="overflow-x-auto no-scrollbar scrollbar-none py-1 -mx-4 px-4 lg:mx-0 lg:px-0">
+            <div className="w-max">
+              <AnimatedTabs
+                tabs={CATEGORIES.map((c) => ({
+                  id: c,
+                  label: c,
+                  count: c === 'All Products' ? RIYANSH_PRODUCTS.length : RIYANSH_PRODUCTS.filter((p) => p.category === c).length
+                }))}
+                activeTab={selectedCategory}
+                onChange={setSelectedCategory}
+              />
+            </div>
           </div>
 
           {/* Search & Sort Controls */}
           <div className="flex items-center gap-3">
             {/* Search Input */}
             <div className="relative flex-1 md:w-64">
-              <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/40" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/50" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search herbs or products..."
-                className="w-full pl-9 pr-8 py-2.5 bg-white text-xs text-[#1a1c18] placeholder-[#1a1c18]/40 border border-[rgba(26,28,24,0.1)] rounded-full focus:outline-none focus:border-[#1a1c18] shadow-2xs transition-colors"
+                className="w-full pl-9 pr-8 py-2.5 bg-white text-[13.5px] sm:text-sm text-[#1a1c18] placeholder-[#1a1c18]/50 border border-[rgba(26,28,24,0.12)] rounded-full focus:outline-none focus:border-[#1a1c18] shadow-2xs transition-colors"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#1a1c18]/40 hover:text-[#1a1c18] p-0.5"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#1a1c18]/60 hover:text-[#1a1c18] p-0.5"
                 >
                   ✕
                 </button>
@@ -119,12 +118,12 @@ export const StorePage: React.FC = () => {
             </div>
 
             {/* Sort Dropdown */}
-            <div className="relative flex items-center bg-white border border-[rgba(26,28,24,0.1)] rounded-full px-3.5 py-2 text-xs text-[#1a1c18] shadow-2xs">
-              <ArrowUpDown className="w-3.5 h-3.5 opacity-60 mr-1.5 shrink-0" />
+            <div className="relative flex items-center bg-white border border-[rgba(26,28,24,0.12)] rounded-full px-3.5 py-2 text-[13px] sm:text-sm text-[#1a1c18] shadow-2xs font-medium">
+              <ArrowUpDown className="w-3.5 h-3.5 opacity-70 mr-1.5 shrink-0" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-transparent text-xs focus:outline-none cursor-pointer pr-1"
+                className="bg-transparent text-[13px] sm:text-sm focus:outline-none cursor-pointer pr-1 font-medium"
               >
                 <option value="featured">Sort: Featured</option>
                 <option value="bestseller">Best Sellers</option>
@@ -138,12 +137,12 @@ export const StorePage: React.FC = () => {
 
         {/* Active Filter Chips */}
         {hasActiveFilters && (
-          <div className="pt-4 flex items-center flex-wrap gap-2 text-xs">
-            <span className="text-[#1a1c18]/50 font-mono text-[11px] uppercase">Active:</span>
+          <div className="pt-4 flex items-center flex-wrap gap-2 text-xs sm:text-[13px]">
+            <span className="text-[#1a1c18]/60 font-mono text-xs uppercase font-medium">Active:</span>
             {selectedCategory !== 'All Products' && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#dac5a7]/30 text-[#1a1c18] rounded-full text-[11px]">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#dac5a7]/30 text-[#1a1c18] rounded-full text-xs font-medium">
                 {selectedCategory}
-                <button onClick={() => setSelectedCategory('All Products')} className="opacity-60 hover:opacity-100">
+                <button onClick={() => setSelectedCategory('All Products')} className="opacity-70 hover:opacity-100">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -166,7 +165,7 @@ export const StorePage: React.FC = () => {
         )}
 
         {/* Products Count Indicator */}
-        <div className="pt-6 pb-4 flex items-center justify-between text-xs text-[#1a1c18]/60">
+        <div className="pt-6 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 text-xs text-[#1a1c18]/60">
           <span className="font-mono">
             Showing {filteredProducts.length} of {RIYANSH_PRODUCTS.length} authentic formulations
           </span>

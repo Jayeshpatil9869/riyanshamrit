@@ -3,7 +3,7 @@ import { ShieldCheck, Truck, RotateCcw, Lock, FileText } from 'lucide-react';
 
 export const ShippingPolicyPage: React.FC = () => {
   return (
-    <div className="w-full pt-8 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container max-w-3xl">
         <div className="py-12 border-b border-[rgba(26,28,24,0.08)]">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-2">
@@ -53,7 +53,7 @@ export const ShippingPolicyPage: React.FC = () => {
 
 export const RefundPolicyPage: React.FC = () => {
   return (
-    <div className="w-full pt-8 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container max-w-3xl">
         <div className="py-12 border-b border-[rgba(26,28,24,0.08)]">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-2">
@@ -99,7 +99,7 @@ export const RefundPolicyPage: React.FC = () => {
 
 export const PrivacyPolicyPage: React.FC = () => {
   return (
-    <div className="w-full pt-8 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container max-w-3xl">
         <div className="py-12 border-b border-[rgba(26,28,24,0.08)]">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-2">
@@ -140,7 +140,7 @@ export const PrivacyPolicyPage: React.FC = () => {
 
 export const TermsPage: React.FC = () => {
   return (
-    <div className="w-full pt-8 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container max-w-3xl">
         <div className="py-12 border-b border-[rgba(26,28,24,0.08)]">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-2">

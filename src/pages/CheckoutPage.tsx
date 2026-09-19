@@ -46,7 +46,7 @@ export const CheckoutPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full pt-8 pb-24">
+    <div className="w-full pt-24 sm:pt-28 lg:pt-32 pb-24">
       <div className="kanva-container">
         {/* Checkout Header */}
         <div className="py-6 border-b border-[rgba(26,28,24,0.08)] flex items-center justify-between">
