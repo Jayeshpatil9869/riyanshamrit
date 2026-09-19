@@ -46,6 +46,8 @@ export interface Product {
   dosageInstructions: string;
   certifications: string[];
   cautions?: string;
+  stockCount?: number;
+  createdAt?: string;
 }
 
 export interface CartItem {
@@ -71,6 +73,7 @@ export interface OrderItem {
 }
 
 export interface ShippingAddress {
+  id?: string;
   fullName: string;
   email: string;
   phone: string;
@@ -80,6 +83,8 @@ export interface ShippingAddress {
   state: string;
   pincode: string;
   country: string;
+  isDefault?: boolean;
+  label?: string; // 'Home' | 'Office' | 'Clinic'
 }
 
 export interface Order {
@@ -94,11 +99,15 @@ export interface Order {
   total: number;
   currency: Currency;
   paymentMethod: string;
-  paymentStatus: string;
-  status?: string;
-  fulfillmentStatus: 'Processing' | 'In Transit' | 'Out for Delivery' | 'Delivered' | string;
+  paymentStatus: 'Paid' | 'Pending' | 'Failed' | 'Refunded' | string;
+  status?: 'confirmed' | 'processing' | 'in_transit' | 'out_for_delivery' | 'delivered' | 'cancelled' | string;
+  fulfillmentStatus: 'Processing' | 'In Transit' | 'Out for Delivery' | 'Delivered' | 'Cancelled' | string;
   trackingNumber?: string;
+  carrier?: string;
   estimatedDelivery?: string;
+  orderNotes?: string;
+  customerEmail?: string;
+  customerName?: string;
 }
 
 export interface User {
@@ -106,6 +115,48 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  role?: 'admin' | 'customer' | 'moderator';
+  avatar?: string;
+  joinedDate?: string;
+  totalOrders?: number;
+  totalSpent?: number;
+  status?: 'active' | 'vip' | 'suspended';
+  doshaPreference?: 'Vata' | 'Pitta' | 'Kapha' | 'Tridoshic' | 'Not Determined';
   savedAddresses?: ShippingAddress[];
   addresses?: any[];
 }
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discountType: 'percentage' | 'fixed';
+  value: number; // percentage (e.g. 10 for 10%) or fixed INR (e.g. 150)
+  minSpend: number;
+  usageCount: number;
+  maxUses?: number;
+  expiryDate?: string;
+  isActive: boolean;
+  description: string;
+}
+
+export interface StoreSettings {
+  announcementText: string;
+  isAnnouncementActive: boolean;
+  marqueeSpeed: number; // in seconds
+  freeShippingThreshold: number;
+  supportEmail: string;
+  supportPhone: string;
+  storeName: string;
+  maintenanceMode: boolean;
+  taxRatePercent: number;
+}
+
+export interface AdminActivityLog {
+  id: string;
+  timestamp: string;
+  adminName: string;
+  action: string;
+  category: 'products' | 'orders' | 'customers' | 'coupons' | 'settings' | 'auth';
+  details: string;
+}
+

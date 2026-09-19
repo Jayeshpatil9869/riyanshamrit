@@ -28,11 +28,24 @@ import { CheckoutPage } from './pages/CheckoutPage';
 import { PaymentPage } from './pages/PaymentPage';
 import { OrderSuccessPage, OrderFailurePage, OrderPendingPage } from './pages/OrderStatusPages';
 import { OrdersPage } from './pages/OrdersPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { LoginPage, SignupPage, GoogleCallbackPage } from './pages/AuthPages';
 import { ShippingPolicyPage, RefundPolicyPage, PrivacyPolicyPage, TermsPage } from './pages/PolicyPages';
 
+// Admin Suite Pages
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { AdminProductsPage } from './pages/admin/AdminProductsPage';
+import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
+import { AdminCustomersPage } from './pages/admin/AdminCustomersPage';
+import { AdminCouponsPage } from './pages/admin/AdminCouponsPage';
+import { AdminAnalyticsPage } from './pages/admin/AdminAnalyticsPage';
+import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
+import { AdminActivityPage } from './pages/admin/AdminActivityPage';
+
 const AppContent: React.FC = () => {
   const { currentPath, isProductDetail } = useRouter();
+
+  const isAdminRoute = currentPath.startsWith('/admin');
 
   const renderActiveRoute = () => {
     if (isProductDetail) {
@@ -64,6 +77,8 @@ const AppContent: React.FC = () => {
         return <OrderPendingPage />;
       case '/account/orders':
         return <OrdersPage />;
+      case '/account/profile':
+        return <ProfilePage />;
       case '/login':
         return <LoginPage />;
       case '/signup':
@@ -78,10 +93,40 @@ const AppContent: React.FC = () => {
         return <PrivacyPolicyPage />;
       case '/terms':
         return <TermsPage />;
+
+      // Admin Suite Routes
+      case '/admin':
+      case '/admin/dashboard':
+        return <AdminDashboardPage />;
+      case '/admin/products':
+        return <AdminProductsPage />;
+      case '/admin/orders':
+        return <AdminOrdersPage />;
+      case '/admin/customers':
+        return <AdminCustomersPage />;
+      case '/admin/coupons':
+        return <AdminCouponsPage />;
+      case '/admin/analytics':
+        return <AdminAnalyticsPage />;
+      case '/admin/settings':
+        return <AdminSettingsPage />;
+      case '/admin/activity':
+        return <AdminActivityPage />;
+
       default:
         return <HomePage />;
     }
   };
+
+  // Dedicated Admin layout container without client header/footer clutter
+  if (isAdminRoute) {
+    return (
+      <div className="min-h-screen bg-[#f5f4ef] text-[#1a1c18] font-sans antialiased selection:bg-[#dac5a7] selection:text-[#1a1c18]">
+        {renderActiveRoute()}
+        <ToastContainer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f2f2ef] text-[#1a1c18] font-sans antialiased selection:bg-[#dac5a7] selection:text-[#1a1c18]">

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from '../context/RouterContext';
-import { RIYANSH_PRODUCTS, CATEGORIES } from '../data/products';
+import { useCommerce } from '../context/CommerceContext';
+import { CATEGORIES } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { BlurText } from '../components/motion/BlurText';
 import { AnimatedTabs } from '../components/motion/AnimatedTabs';
@@ -8,6 +9,7 @@ import { Search, X, ArrowUpDown } from 'lucide-react';
 
 export const StorePage: React.FC = () => {
   const { queryParams, navigate } = useRouter();
+  const { products } = useCommerce();
 
   const initialCat = queryParams.get('category') || 'All Products';
   const initialSearch = queryParams.get('search') || '';
@@ -24,7 +26,7 @@ export const StorePage: React.FC = () => {
   }, [queryParams]);
 
   const filteredProducts = useMemo(() => {
-    return RIYANSH_PRODUCTS.filter((product) => {
+    return products.filter((product) => {
       // Category filter
       if (selectedCategory !== 'All Products' && product.category !== selectedCategory) {
         return false;
@@ -87,7 +89,7 @@ export const StorePage: React.FC = () => {
                 tabs={CATEGORIES.map((c) => ({
                   id: c,
                   label: c,
-                  count: c === 'All Products' ? RIYANSH_PRODUCTS.length : RIYANSH_PRODUCTS.filter((p) => p.category === c).length
+                  count: c === 'All Products' ? products.length : products.filter((p) => p.category === c).length
                 }))}
                 activeTab={selectedCategory}
                 onChange={setSelectedCategory}
@@ -167,7 +169,7 @@ export const StorePage: React.FC = () => {
         {/* Products Count Indicator */}
         <div className="pt-6 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 text-xs text-[#1a1c18]/60">
           <span className="font-mono">
-            Showing {filteredProducts.length} of {RIYANSH_PRODUCTS.length} authentic formulations
+            Showing {filteredProducts.length} of {products.length} authentic formulations
           </span>
           <span className="text-[11px] font-mono text-[#757d5c]">
             GMP Quality Verified • Direct from Sangamner

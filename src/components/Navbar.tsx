@@ -195,9 +195,20 @@ export const Navbar: React.FC = () => {
 
           {/* ================= RIGHT: UTILITIES & ACTIONS ================= */}
           <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+            {/* Admin Badge Pill if admin */}
+            {user?.role === 'admin' && (
+              <Link
+                to="/admin"
+                className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-[#3c4433] hover:bg-[#2b3323] text-[#dac5a7] rounded-full text-[11px] font-mono font-bold uppercase shadow-xs transition-transform hover:scale-105"
+              >
+                <span>Admin Portal</span>
+                <ArrowRight size={11} />
+              </Link>
+            )}
+
             {/* Account Icon (Desktop & Tablet) */}
             <Link
-              to={user ? '/account/orders' : '/login'}
+              to={user ? '/account/profile' : '/login'}
               aria-label="Account"
               className="hidden sm:flex p-2 rounded-full hover:bg-[#f4f4f1] text-[#1a1c18] transition-colors items-center justify-center cursor-pointer"
             >
@@ -283,6 +294,8 @@ export const Navbar: React.FC = () => {
                   { label: 'About Riyansh Amrit', path: '/about' },
                   { label: 'Contact & Support', path: '/contact' },
                   { label: 'Saved Wishlist', path: '/wishlist' },
+                  { label: 'Patron Profile & Orders', path: user ? '/account/profile' : '/login' },
+                  ...(user?.role === 'admin' ? [{ label: '⚡ Admin Management Suite', path: '/admin' }] : [])
                 ].map((item) => (
                   <Link
                     key={item.label}

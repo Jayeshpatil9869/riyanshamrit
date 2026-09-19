@@ -1,10 +1,27 @@
 import React, { useState } from 'react';
 import { useRouter, Link } from '../context/RouterContext';
 import { useCommerce } from '../context/CommerceContext';
-import { ShieldCheck, ArrowRight, User, Lock, Mail, CheckCircle2 } from 'lucide-react';
+import {
+  ShieldCheck,
+  ArrowRight,
+  User,
+  Lock,
+  Mail,
+  Sparkles,
+  Shield,
+  CheckCircle2
+} from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { user, loginWithEmail, loginWithGoogle, logout, addToast } = useCommerce();
+  const {
+    user,
+    loginWithEmail,
+    loginWithGoogle,
+    loginAsDemoAdmin,
+    loginAsDemoPatron,
+    logout,
+    addToast
+  } = useCommerce();
   const { navigate } = useRouter();
 
   const [email, setEmail] = useState('');
@@ -12,55 +29,72 @@ export const LoginPage: React.FC = () => {
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      addToast('Please enter both email and password', 'error');
+    if (!email) {
+      addToast('Please enter your email address', 'error');
       return;
     }
     loginWithEmail(email, password);
-    addToast('Welcome back to your Riyansh Patron Portal', 'success');
-    navigate('/account/orders');
+    if (email.toLowerCase().includes('admin')) {
+      navigate('/admin');
+    } else {
+      navigate('/account/profile');
+    }
   };
 
-  const handleGoogleAuth = () => {
-    loginWithGoogle();
-    addToast('Signed in securely with Google Identity', 'success');
-    navigate('/account/orders');
+  const handleAdminDemo = () => {
+    loginAsDemoAdmin();
+    navigate('/admin');
+  };
+
+  const handlePatronDemo = () => {
+    loginAsDemoPatron();
+    navigate('/account/profile');
   };
 
   if (user) {
     return (
-      <div className="w-full py-20">
-        <div className="kanva-container max-w-md text-center space-y-6">
-          <div className="w-16 h-16 rounded-full bg-[#3c4433] text-[#dac5a7] flex items-center justify-center mx-auto text-xl font-serif">
+      <div className="w-full min-h-[calc(100vh-160px)] pt-32 pb-36 flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-[440px] mx-auto text-center space-y-6">
+          <div className="w-16 h-16 rounded-full bg-[#3c4433] text-[#dac5a7] flex items-center justify-center mx-auto text-2xl font-serif border-2 border-[#dac5a7]/30 shadow-lg">
             {user.name.charAt(0)}
           </div>
-          <div>
-            <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-1">
-              PATRON PROFILE ACTIVE
+          <div className="space-y-1">
+            <span className="text-[10px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-bold block">
+              {user.role === 'admin' ? 'ADMINISTRATOR AUTHENTICATED' : 'PATRON PROFILE ACTIVE'}
             </span>
             <h1 className="font-serif text-3xl text-[#1a1c18]">{user.name}</h1>
-            <p className="text-xs text-[#1a1c18]/60 font-mono mt-1">{user.email}</p>
+            <p className="text-xs text-[#1a1c18]/60 font-mono">{user.email}</p>
           </div>
 
-          <div className="p-5 bg-white rounded-2xl border border-[rgba(26,28,24,0.08)] space-y-3 text-xs">
+          <div className="p-6 sm:p-8 bg-white rounded-[2rem] border border-[rgba(26,28,24,0.08)] space-y-3 text-xs shadow-[0_20px_50px_rgba(26,28,24,0.06)]">
+            {user.role === 'admin' && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="w-full py-3.5 px-4 bg-[#3c4433] hover:bg-[#2b3323] text-white rounded-full font-medium transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Shield className="w-4 h-4 text-[#dac5a7]" />
+                <span>Open Admin Portal</span>
+              </button>
+            )}
+
             <button
-              onClick={() => navigate('/account/orders')}
-              className="w-full py-3 px-4 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full font-medium transition-colors"
+              onClick={() => navigate('/account/profile')}
+              className="w-full py-3.5 px-4 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full font-medium transition-all shadow-xs cursor-pointer"
             >
-              View Order History & Invoices
+              View Patron Profile &amp; Addresses
             </button>
             <button
-              onClick={() => navigate('/wishlist')}
-              className="w-full py-2.5 px-4 border border-[rgba(26,28,24,0.18)] hover:bg-[#f2f2ef] rounded-full font-medium transition-colors"
+              onClick={() => navigate('/account/orders')}
+              className="w-full py-3 px-4 border border-[rgba(26,28,24,0.18)] hover:bg-[#f2f2ef] rounded-full font-medium transition-colors cursor-pointer text-[#1a1c18]"
             >
-              Saved Formulations
+              Order History &amp; Tracking
             </button>
             <button
               onClick={() => {
                 logout();
                 addToast('You have been signed out safely', 'info');
               }}
-              className="w-full py-2 text-[#1a1c18]/50 hover:text-red-700 underline text-[11px]"
+              className="w-full py-2 text-[#1a1c18]/50 hover:text-red-700 underline text-[11px] cursor-pointer"
             >
               Sign Out of Dispensary
             </button>
@@ -71,25 +105,60 @@ export const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="w-full py-16 sm:py-24">
-      <div className="kanva-container max-w-md">
-        <div className="text-center space-y-2 mb-8">
-          <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block">
-            PATRON ACCESS PORTAL
+    <div className="w-full min-h-[calc(100vh-160px)] pt-32 pb-36 flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-[460px] mx-auto space-y-6">
+        {/* Header Heading */}
+        <div className="text-center space-y-1.5">
+          <span className="text-[10px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-bold block">
+            PATRON &amp; APOTHECARY ACCESS
           </span>
-          <h1 className="font-serif text-3xl sm:text-4xl text-[#1a1c18] font-normal">
+          <h1 className="font-serif text-3xl sm:text-4xl text-[#1a1c18] font-normal tracking-tight">
             Sign In to Riyansh
           </h1>
-          <p className="text-xs text-[#1a1c18]/60 font-body">
-            Access saved Ayurvedic regimens, order tracking, and patron discounts.
+          <p className="text-xs text-[#1a1c18]/60 font-body max-w-sm mx-auto">
+            Access saved regimens, order tracking, and apothecary dispensary controls.
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-3xl border border-[rgba(26,28,24,0.08)] shadow-xs space-y-5">
-          {/* Google Sign In Button */}
+        {/* Card Form */}
+        <div className="bg-white rounded-[2rem] border border-[rgba(26,28,24,0.08)] p-7 sm:p-9 shadow-[0_20px_50px_rgba(26,28,24,0.06)] space-y-5">
+          {/* Quick 1-Click Evaluation Presets */}
+          <div className="p-3.5 bg-[#fbfbf9] rounded-2xl border border-[rgba(26,28,24,0.08)] space-y-2.5">
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase text-[#757d5c] font-bold tracking-wider">
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#dac5a7]" />
+                <span>Instant Evaluation Presets</span>
+              </span>
+              <span className="text-[9px] text-[#1a1c18]/40 font-normal">1-Click</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleAdminDemo}
+                className="py-2.5 px-3 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-xl text-[11px] font-medium flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
+              >
+                <Shield className="w-3.5 h-3.5 text-[#dac5a7]" />
+                <span>Admin Login</span>
+              </button>
+              <button
+                type="button"
+                onClick={handlePatronDemo}
+                className="py-2.5 px-3 bg-white hover:bg-[#f2f2ef] text-[#1a1c18] border border-[rgba(26,28,24,0.14)] rounded-xl text-[11px] font-medium flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
+              >
+                <User className="w-3.5 h-3.5 text-[#757d5c]" />
+                <span>Patron Login</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Google Sign In */}
           <button
-            onClick={handleGoogleAuth}
-            className="w-full py-3 px-4 bg-[#f2f2ef] hover:bg-[#e8e8e1] text-[#1a1c18] border border-[rgba(26,28,24,0.12)] rounded-full text-xs font-medium transition-colors flex items-center justify-center gap-2.5"
+            onClick={() => {
+              loginWithGoogle();
+              addToast('Signed in securely with Google Identity', 'success');
+              navigate('/account/profile');
+            }}
+            className="w-full py-3 px-4 bg-[#f5f4ef] hover:bg-[#eae8e1] text-[#1a1c18] border border-[rgba(26,28,24,0.08)] rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.99]"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -112,59 +181,89 @@ export const LoginPage: React.FC = () => {
             <span>Continue with Google</span>
           </button>
 
-          <div className="flex items-center gap-3 text-xs text-[#1a1c18]/30">
-            <div className="flex-1 h-px bg-black/10" />
-            <span className="font-mono text-[10px] uppercase">Or via Email</span>
-            <div className="flex-1 h-px bg-black/10" />
+          {/* Divider */}
+          <div className="flex items-center gap-3 text-xs text-[#1a1c18]/30 py-0.5">
+            <div className="flex-1 h-px bg-black/8" />
+            <span className="font-mono text-[9.5px] uppercase tracking-wider text-[#1a1c18]/40 font-semibold">
+              Or with Email
+            </span>
+            <div className="flex-1 h-px bg-black/8" />
           </div>
 
+          {/* Form */}
           <form onSubmit={handleEmailSubmit} className="space-y-4">
             <div>
-              <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+              <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1.5 font-semibold">
                 Email Address
               </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="patron@example.com"
-                className="w-full px-4 py-2.5 bg-[#f2f2ef] border border-[rgba(26,28,24,0.12)] rounded-xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
-                required
-              />
+              <div className="relative">
+                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@riyanshamrit.com or patron@..."
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#1a1c18]/70 font-semibold">
                   Password
                 </label>
-                <a href="#forgot" onClick={(e) => { e.preventDefault(); addToast('Password reset link dispatched to your inbox', 'info'); }} className="text-[10px] text-[#757d5c] hover:underline">
+                <a
+                  href="#forgot"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addToast('Password reset link dispatched to your inbox', 'info');
+                  }}
+                  className="text-[10.5px] text-[#757d5c] hover:underline font-mono"
+                >
                   Forgot?
                 </a>
               </div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-2.5 bg-[#f2f2ef] border border-[rgba(26,28,24,0.12)] rounded-xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
-                required
-              />
+              <div className="relative">
+                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
+                />
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium transition-colors shadow-xs"
+              className="w-full py-3.5 bg-[#1a1c18] hover:bg-[#3c4433] active:bg-[#2b3323] text-white rounded-full text-xs font-semibold tracking-wide uppercase transition-all shadow-md hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer mt-2"
             >
-              Sign In to Patron Portal
+              <span>Sign In to Dispensary</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#dac5a7]" />
             </button>
           </form>
 
+          {/* Switch to Signup */}
           <div className="pt-3 border-t border-[rgba(26,28,24,0.06)] text-center text-xs text-[#1a1c18]/60">
             <span>New to Riyansh Amrit? </span>
-            <Link to="/signup" className="text-[#3c4433] font-medium hover:underline">
+            <Link to="/signup" className="text-[#3c4433] font-semibold hover:underline">
               Create Patron Account
             </Link>
+          </div>
+        </div>
+
+        {/* Security Trust Badges */}
+        <div className="flex items-center justify-center gap-6 text-[11px] font-mono text-[#1a1c18]/50 text-center">
+          <div className="flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#757d5c]" />
+            <span>256-Bit Encrypted</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#757d5c]" />
+            <span>Sangamner Dispensary</span>
           </div>
         </div>
       </div>
@@ -173,7 +272,7 @@ export const LoginPage: React.FC = () => {
 };
 
 export const SignupPage: React.FC = () => {
-  const { loginWithEmail, addToast } = useCommerce();
+  const { signup, addToast } = useCommerce();
   const { navigate } = useRouter();
 
   const [name, setName] = useState('');
@@ -186,81 +285,90 @@ export const SignupPage: React.FC = () => {
       addToast('Please complete all registration fields', 'error');
       return;
     }
-    loginWithEmail(email, password);
-    addToast(`Welcome to Riyansh Amrit, ${name}!`, 'success');
-    navigate('/store');
+    signup(name, email);
+    navigate('/account/profile');
   };
 
   return (
-    <div className="w-full py-16 sm:py-24">
-      <div className="kanva-container max-w-md">
-        <div className="text-center space-y-2 mb-8">
-          <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block">
+    <div className="w-full min-h-[calc(100vh-160px)] pt-32 pb-36 flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-[460px] mx-auto space-y-6">
+        <div className="text-center space-y-1.5">
+          <span className="text-[10px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-bold block">
             BECOME AN AYURVEDIC PATRON
           </span>
-          <h1 className="font-serif text-3xl sm:text-4xl text-[#1a1c18] font-normal">
+          <h1 className="font-serif text-3xl sm:text-4xl text-[#1a1c18] font-normal tracking-tight">
             Create an Account
           </h1>
-          <p className="text-xs text-[#1a1c18]/60 font-body">
-            Receive complimentary Ayurvedic dosage consultation and patron benefits.
+          <p className="text-xs text-[#1a1c18]/60 font-body max-w-sm mx-auto">
+            Receive complimentary Ayurvedic dosage consultations, customized regimens, and patron privileges.
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-3xl border border-[rgba(26,28,24,0.08)] shadow-xs space-y-4">
+        <div className="bg-white rounded-[2rem] border border-[rgba(26,28,24,0.08)] p-7 sm:p-9 shadow-[0_20px_50px_rgba(26,28,24,0.06)] space-y-5">
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+              <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1.5 font-semibold">
                 Full Legal Name
               </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="E.g., Vaidya Sunita Joshi"
-                className="w-full px-4 py-2.5 bg-[#f2f2ef] border border-[rgba(26,28,24,0.12)] rounded-xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
-                required
-              />
+              <div className="relative">
+                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="E.g., Vaidya Sunita Joshi"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+              <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1.5 font-semibold">
                 Email Address
               </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="sunita@example.com"
-                className="w-full px-4 py-2.5 bg-[#f2f2ef] border border-[rgba(26,28,24,0.12)] rounded-xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
-                required
-              />
+              <div className="relative">
+                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="sunita@example.com"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+              <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1.5 font-semibold">
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
-                className="w-full px-4 py-2.5 bg-[#f2f2ef] border border-[rgba(26,28,24,0.12)] rounded-xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
-                required
-              />
+              <div className="relative">
+                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 8 characters"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
+                  required
+                />
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium transition-colors shadow-xs"
+              className="w-full py-3.5 bg-[#1a1c18] hover:bg-[#3c4433] active:bg-[#2b3323] text-white rounded-full text-xs font-semibold tracking-wide uppercase transition-all shadow-md hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer mt-2"
             >
-              Complete Registration
+              <span>Complete Registration</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#dac5a7]" />
             </button>
           </form>
 
           <div className="pt-3 border-t border-[rgba(26,28,24,0.06)] text-center text-xs text-[#1a1c18]/60">
             <span>Already have an account? </span>
-            <Link to="/login" className="text-[#3c4433] font-medium hover:underline">
+            <Link to="/login" className="text-[#3c4433] font-semibold hover:underline">
               Sign In
             </Link>
           </div>
@@ -276,11 +384,11 @@ export const GoogleCallbackPage: React.FC = () => {
 
   React.useEffect(() => {
     loginWithGoogle();
-    navigate('/account/orders');
+    navigate('/account/profile');
   }, [loginWithGoogle, navigate]);
 
   return (
-    <div className="w-full py-24 text-center">
+    <div className="w-full py-32 text-center">
       <p className="text-xs font-mono text-[#1a1c18]/60">Completing Google Authentication...</p>
     </div>
   );

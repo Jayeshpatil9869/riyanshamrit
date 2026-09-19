@@ -50,7 +50,7 @@ function AnimatedCounter({
 }
 
 // --- BLUR REVEAL WRAPPER ---
-const blurReveal = {
+const blurReveal: any = {
   hidden: { opacity: 0.001, y: 20, filter: 'blur(8px)' },
   visible: {
     opacity: 1,

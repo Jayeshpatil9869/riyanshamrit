@@ -6,7 +6,7 @@ import { Search, X, ArrowRight } from 'lucide-react';
 import { Product } from '../types';
 
 export const SearchModal: React.FC = () => {
-  const { isSearchOpen, setIsSearchOpen, formatPrice, addToCart } = useCommerce();
+  const { isSearchOpen, setIsSearchOpen, formatPrice, addToCart, products } = useCommerce();
   const { navigate } = useRouter();
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +32,7 @@ export const SearchModal: React.FC = () => {
   ];
 
   const results: Product[] = query.trim()
-    ? RIYANSH_PRODUCTS.filter((p) => {
+    ? products.filter((p) => {
         const q = query.toLowerCase();
         return (
           p.name.toLowerCase().includes(q) ||

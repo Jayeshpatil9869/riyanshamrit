@@ -30,7 +30,7 @@ import { motion } from 'motion/react';
 
 export const HomePage: React.FC = () => {
   const { navigate } = useRouter();
-  const { addToast } = useCommerce();
+  const { addToast, products } = useCommerce();
 
   // Modals for rich interaction
   const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -51,16 +51,16 @@ export const HomePage: React.FC = () => {
 
   const filteredProducts = React.useMemo(() => {
     if (selectedCategoryTab === 'bestsellers') {
-      return RIYANSH_PRODUCTS.filter((p) => p.bestseller || p.featured).slice(0, 3);
+      return products.filter((p) => p.bestseller || p.featured).slice(0, 3);
     }
     if (selectedCategoryTab === 'new') {
-      return RIYANSH_PRODUCTS.filter((p) => p.isNew || p.tag === 'NEW' || p.rating >= 4.9).slice(0, 3);
+      return products.filter((p) => p.isNew || p.tag === 'NEW' || p.rating >= 4.9).slice(0, 3);
     }
     if (selectedCategoryTab === 'sale') {
-      return RIYANSH_PRODUCTS.filter((p) => p.compareAtPrice > p.price).slice(0, 3);
+      return products.filter((p) => p.compareAtPrice > p.price).slice(0, 3);
     }
-    return RIYANSH_PRODUCTS.slice(0, 3);
-  }, [selectedCategoryTab]);
+    return products.slice(0, 3);
+  }, [selectedCategoryTab, products]);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();

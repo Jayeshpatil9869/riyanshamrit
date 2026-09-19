@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter, Link } from '../context/RouterContext';
 import { useCommerce } from '../context/CommerceContext';
-import { RIYANSH_PRODUCTS, SAMPLE_REVIEWS } from '../data/products';
+import { SAMPLE_REVIEWS } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { BorderBeam } from '../components/ui/BorderBeam';
@@ -26,6 +26,7 @@ import { Product, Review } from '../types';
 export const ProductDetailPage: React.FC = () => {
   const { productSlug, navigate } = useRouter();
   const {
+    products,
     formatPrice,
     addToCart,
     toggleWishlist,
@@ -33,7 +34,7 @@ export const ProductDetailPage: React.FC = () => {
     addToast
   } = useCommerce();
 
-  const product = RIYANSH_PRODUCTS.find((p) => p.slug === productSlug) || RIYANSH_PRODUCTS[0];
+  const product = products.find((p) => p.slug === productSlug) || products[0];
 
   const [activeImage, setActiveImage] = useState(product.image);
   const [quantity, setQuantity] = useState(1);
@@ -86,7 +87,7 @@ export const ProductDetailPage: React.FC = () => {
   };
 
   // Related products
-  const relatedProducts = RIYANSH_PRODUCTS.filter(
+  const relatedProducts = products.filter(
     (p) => p.id !== product.id && p.category === product.category
   ).slice(0, 4);
 
