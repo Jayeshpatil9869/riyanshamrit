@@ -16,10 +16,10 @@ importers:
         version: 3.47.0(react@19.3.0)
       '@tailwindcss/vite':
         specifier: ^4.3.3
-        version: 4.3.3(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+        version: 4.3.3(vite@8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       '@vitejs/plugin-react':
         specifier: ^6.1.1
-        version: 6.1.1(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+        version: 6.1.1(vite@8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       canvas-confetti:
         specifier: ^1.9.4
         version: 1.9.4
@@ -52,7 +52,7 @@ importers:
         version: 3.7.0
       vite:
         specifier: ^8.3.0
-        version: 8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
+        version: 8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
     devDependencies:
       '@types/canvas-confetti':
         specifier: ^1.9.0
@@ -73,51 +73,14 @@ importers:
         specifier: ^10.4.21
         version: 10.6.1(postcss@8.5.28)
       esbuild:
-        specifier: ^0.28.0
-        version: 0.28.2
-      prettier:
-        specifier: ^3.9.8
-        version: 3.9.8
+        specifier: ^0.25.0
+        version: 0.25.12
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
       tsx:
         specifier: ^4.21.0
         version: 4.23.15
-      turbo:
-        specifier: ^2.5.4
-        version: 2.11.2
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-
-  apps/admin:
-    dependencies:
-      '@supabase/ssr':
-        specifier: ^0.6.1
-        version: 0.6.1(@supabase/supabase-js@2.116.0(@opentelemetry/api@1.9.1))
-      '@supabase/supabase-js':
-        specifier: ^2.50.0
-        version: 2.116.0(@opentelemetry/api@1.9.1)
-      next:
-        specifier: ^15.3.3
-        version: 15.5.25(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      react:
-        specifier: ^19.0.1
-        version: 19.3.0
-      react-dom:
-        specifier: ^19.0.1
-        version: 19.3.0(react@19.3.0)
-    devDependencies:
-      '@types/node':
-        specifier: ^22.14.0
-        version: 22.20.4
-      '@types/react':
-        specifier: ^19.3.0
-        version: 19.3.0
-      '@types/react-dom':
-        specifier: ^19.3.0
-        version: 19.3.0(@types/react@19.3.0)
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
@@ -169,6 +132,9 @@ importers:
       '@upstash/redis':
         specifier: ^1.35.0
         version: 1.39.0
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
       drizzle-orm:
         specifier: ^0.44.2
         version: 0.44.7(@opentelemetry/api@1.9.1)(@types/pg@8.15.6)(@upstash/redis@1.39.0)(postgres@3.4.9)
@@ -194,40 +160,6 @@ importers:
       tsx:
         specifier: ^4.21.0
         version: 4.23.15
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-
-  apps/web:
-    dependencies:
-      '@riyanshamrit/seo':
-        specifier: workspace:*
-        version: link:../../packages/seo
-      '@supabase/ssr':
-        specifier: ^0.6.1
-        version: 0.6.1(@supabase/supabase-js@2.116.0(@opentelemetry/api@1.9.1))
-      '@supabase/supabase-js':
-        specifier: ^2.50.0
-        version: 2.116.0(@opentelemetry/api@1.9.1)
-      next:
-        specifier: ^15.3.3
-        version: 15.5.25(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      react:
-        specifier: ^19.0.1
-        version: 19.3.0
-      react-dom:
-        specifier: ^19.0.1
-        version: 19.3.0(react@19.3.0)
-    devDependencies:
-      '@types/node':
-        specifier: ^22.14.0
-        version: 22.20.4
-      '@types/react':
-        specifier: ^19.3.0
-        version: 19.3.0
-      '@types/react-dom':
-        specifier: ^19.3.0
-        version: 19.3.0(@types/react@19.3.0)
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
@@ -1911,11 +1843,6 @@ packages:
     resolution: {integrity: sha512-MHAnlXxi2s6yiJsZsQMfs2B3RFxeVfQWxerqYhIMqcCQV/FuY3LIeouPEkXw/ah7wUWMLYwempF9MOCUScyddg==}
     engines: {node: '>=22.0.0'}
 
-  '@supabase/ssr@0.6.1':
-    resolution: {integrity: sha512-QtQgEMvaDzr77Mk3vZ3jWg2/y+D8tExYF7vcJT+wQ8ysuvOeGGjYbZlvj5bHYsj/SpC0bihcisnwPrM4Gp5G4g==}
-    peerDependencies:
-      '@supabase/supabase-js': ^2.43.4
-
   '@supabase/storage-js@2.116.0':
     resolution: {integrity: sha512-6/3hR6vccBP6oGM5B6RfbwZcTCKmQOodd/ZWQdsw8yJsU5zO/a//oBL6yLnmgxcjnHSrelW8rsO7hL5DPybyUQ==}
     engines: {node: '>=22.0.0'}
@@ -2040,36 +1967,6 @@ packages:
 
   '@ts-morph/common@0.11.1':
     resolution: {integrity: sha512-7hWZS0NRpEsNV8vWJzg7FEz6V8MaLNeJOmwmghqUXTpzk16V1LLZhdo+4QvE/+zv4cVci0OviuJFnqhEfoV3+g==}
-
-  '@turbo/darwin-64@2.11.2':
-    resolution: {integrity: sha512-0pGfE4Lpxrbd+6gUD9z025Tn4z9uMaSNZ3VX0H/hkUPZkjY5xrCa1NfTqocs09NM5NiYE3wEVcoYBadrhayRCA==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@turbo/darwin-arm64@2.11.2':
-    resolution: {integrity: sha512-Ub7hTbu0bPSiW156ciuLCexG5/SfuZM/QWeBBh9o8P4XyKiZwKqubT6Y9DdJjdp4ZY2wS47Prdl06Xxzt0q6zw==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@turbo/linux-64@2.11.2':
-    resolution: {integrity: sha512-8ipdmgmvSomfQ8E9afUsefO+BLO6QMW7srrHqMOCXD3BPX4FlYqqWAJY1GvbQotZMWKzNohdVkevrUYM6ZzYKA==}
-    cpu: [x64]
-    os: [android, linux]
-
-  '@turbo/linux-arm64@2.11.2':
-    resolution: {integrity: sha512-tsftYXAzgc+GdosqyRP8+Zzk2evJ8ej7Otal7/DU+6GVekVZ3kqM/z7zlGuF4TSHeetWxX04KN1I64LkmvYzgg==}
-    cpu: [arm64]
-    os: [android, linux]
-
-  '@turbo/windows-64@2.11.2':
-    resolution: {integrity: sha512-p5LDVcGmC8W6FCrJPehr1t0ZvYqM8xvG3Va+LkwtDMK3Rl0NhSsJOYbYZVBfMbkm+9RKcCvekFCbSVtQ9Eyuqg==}
-    cpu: [x64]
-    os: [win32]
-
-  '@turbo/windows-arm64@2.11.2':
-    resolution: {integrity: sha512-u0M3m1aXo9lpDM/2iQhxlGzgWjHFq/MC4TqHn1YAvxk8g1wGtzRB2QBx/SLqRChhPhC29mzaB8eLcxKh/pcM1g==}
-    cpu: [arm64]
-    os: [win32]
 
   '@types/aws-lambda@8.10.163':
     resolution: {integrity: sha512-+4zuoEB3S8RIhimtOFT7zAEk2SbpwrKjjGl9CyYnQR6k08uynxfauIIB0pDU1ssr05F8oyGiETwpn+8eXZMqPw==}
@@ -3424,11 +3321,6 @@ packages:
     resolution: {integrity: sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw==}
     engines: {node: '>=12'}
 
-  prettier@3.9.8:
-    resolution: {integrity: sha512-WRFq3Wn3WId7LLROfMLdH7xaFr2jR62wU8nLO6rQUOLOxNZUviyJQs1M0iIhLexSFy+L+w0ch66wtoO2jRjG0A==}
-    engines: {node: '>=14'}
-    hasBin: true
-
   pretty-ms@7.0.1:
     resolution: {integrity: sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q==}
     engines: {node: '>=10'}
@@ -3753,10 +3645,6 @@ packages:
   tsx@4.23.15:
     resolution: {integrity: sha512-Yiex1Ovn8z2xPpOWckIiysV1SSyRMY9BkLF++q0yKiDxCqRhosKfMg3janKkiLBwZ5c/YryloKwGZcrEmtwxKw==}
     engines: {node: '>=18.0.0'}
-    hasBin: true
-
-  turbo@2.11.2:
-    resolution: {integrity: sha512-s0GhnWXlAAN+wb2GRMQxnZgFweRWTAceRWW/4Lk9iHj7QuLZMjDxQQqu+Xoh7Nckuy8UiSim520w6yqP2+ertw==}
     hasBin: true
 
   type-is@1.6.18:
@@ -4474,7 +4362,8 @@ snapshots:
       - encoding
       - supports-color
 
-  '@next/env@15.5.25': {}
+  '@next/env@15.5.25':
+    optional: true
 
   '@next/swc-darwin-arm64@15.5.25':
     optional: true
@@ -5302,11 +5191,6 @@ snapshots:
       '@supabase/phoenix': 0.4.5
       tslib: 2.8.1
 
-  '@supabase/ssr@0.6.1(@supabase/supabase-js@2.116.0(@opentelemetry/api@1.9.1))':
-    dependencies:
-      '@supabase/supabase-js': 2.116.0(@opentelemetry/api@1.9.1)
-      cookie: 1.1.1
-
   '@supabase/storage-js@2.116.0':
     dependencies:
       iceberg-js: 0.8.1
@@ -5325,6 +5209,7 @@ snapshots:
   '@swc/helpers@0.5.15':
     dependencies:
       tslib: 2.8.1
+    optional: true
 
   '@tabler/icons-react@3.47.0(react@19.3.0)':
     dependencies:
@@ -5394,12 +5279,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.3
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.3
 
-  '@tailwindcss/vite@4.3.3(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
+  '@tailwindcss/vite@4.3.3(vite@8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@tailwindcss/node': 4.3.3
       '@tailwindcss/oxide': 4.3.3
       tailwindcss: 4.3.3
-      vite: 8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
+      vite: 8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
   '@traceloop/ai-semantic-conventions@0.20.0':
     dependencies:
@@ -5422,24 +5307,6 @@ snapshots:
       minimatch: 3.1.5
       mkdirp: 1.0.4
       path-browserify: 1.0.1
-
-  '@turbo/darwin-64@2.11.2':
-    optional: true
-
-  '@turbo/darwin-arm64@2.11.2':
-    optional: true
-
-  '@turbo/linux-64@2.11.2':
-    optional: true
-
-  '@turbo/linux-arm64@2.11.2':
-    optional: true
-
-  '@turbo/windows-64@2.11.2':
-    optional: true
-
-  '@turbo/windows-arm64@2.11.2':
-    optional: true
 
   '@types/aws-lambda@8.10.163': {}
 
@@ -5598,10 +5465,10 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-react@6.1.1(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
+  '@vitejs/plugin-react@6.1.1(vite@8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
+      vite: 8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
   abbrev@3.0.1: {}
 
@@ -5765,7 +5632,8 @@ snapshots:
 
   cjs-module-lexer@2.2.1: {}
 
-  client-only@0.0.1: {}
+  client-only@0.0.1:
+    optional: true
 
   cliui@8.0.1:
     dependencies:
@@ -6637,6 +6505,7 @@ snapshots:
       - '@babel/core'
       - '@types/node'
       - babel-plugin-macros
+    optional: true
 
   node-domexception@1.0.0: {}
 
@@ -6750,6 +6619,7 @@ snapshots:
       nanoid: 3.3.19
       picocolors: 1.1.1
       source-map-js: 1.2.1
+    optional: true
 
   postcss@8.5.28:
     dependencies:
@@ -6768,8 +6638,6 @@ snapshots:
       xtend: 4.0.2
 
   postgres@3.4.9: {}
-
-  prettier@3.9.8: {}
 
   pretty-ms@7.0.1:
     dependencies:
@@ -7060,6 +6928,7 @@ snapshots:
     dependencies:
       client-only: 0.0.1
       react: 19.3.0
+    optional: true
 
   supports-color@7.2.0:
     dependencies:
@@ -7134,15 +7003,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  turbo@2.11.2:
-    optionalDependencies:
-      '@turbo/darwin-64': 2.11.2
-      '@turbo/darwin-arm64': 2.11.2
-      '@turbo/linux-64': 2.11.2
-      '@turbo/linux-arm64': 2.11.2
-      '@turbo/windows-64': 2.11.2
-      '@turbo/windows-arm64': 2.11.2
-
   type-is@1.6.18:
     dependencies:
       media-typer: 0.3.0
@@ -7178,7 +7038,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1):
+  vite@8.3.0(@types/node@22.20.4)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -7187,7 +7047,7 @@ snapshots:
       tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 22.20.4
-      esbuild: 0.28.2
+      esbuild: 0.25.12
       fsevents: 2.3.3
       jiti: 2.7.0
       tsx: 4.23.15

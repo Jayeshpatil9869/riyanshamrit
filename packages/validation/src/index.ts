@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const cursorQuerySchema = z.object({
   cursor: z.string().optional(),
-  limit: z.coerce.number().int().min(1).max(50).default(20),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
 export const productCreateSchema = z.object({
@@ -12,7 +12,7 @@ export const productCreateSchema = z.object({
   price: z.coerce.number().positive(),
   compareAtPrice: z.coerce.number().positive().optional(),
   categoryId: z.string().uuid().optional().nullable(),
-  imageUrl: z.string().url().optional().nullable(),
+  imageUrl: z.string().optional().nullable(),
   images: z.array(z.string()).optional(),
   stockQuantity: z.coerce.number().int().min(0).default(0),
   isFeatured: z.boolean().optional(),
@@ -25,7 +25,7 @@ export const categoryCreateSchema = z.object({
   name: z.string().min(1).max(200),
   slug: z.string().min(1).max(200).regex(/^[a-z0-9-]+$/),
   description: z.string().optional(),
-  imageUrl: z.string().url().optional().nullable(),
+  imageUrl: z.string().optional().nullable(),
 });
 
 export const cartUpsertSchema = z.object({
@@ -43,7 +43,7 @@ export const checkoutSchema = z.object({
 export const couponCreateSchema = z.object({
   code: z.string().min(2).max(40),
   description: z.string().optional(),
-  discountType: z.enum(["percent", "fixed"]),
+  discountType: z.enum(["percent", "percentage", "fixed"]),
   discountValue: z.coerce.number().positive(),
   minOrderAmount: z.coerce.number().nonnegative().optional(),
   maxRedemptions: z.coerce.number().int().positive().optional(),

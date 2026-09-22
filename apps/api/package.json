@@ -27,6 +27,7 @@
     "@supabase/supabase-js": "^2.50.0",
     "@upstash/redis": "^1.35.0",
     "drizzle-orm": "^0.44.2",
+    "dotenv": "^17.2.3",
     "fastify": "^5.4.0",
     "fastify-plugin": "^5.0.1",
     "inngest": "^3.39.2",

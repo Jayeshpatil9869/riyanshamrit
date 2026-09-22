@@ -1,11 +1,7 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from 'react';
 import { RouterProvider, useRouter } from './context/RouterContext';
 import { CommerceProvider } from './context/CommerceContext';
+import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
@@ -16,7 +12,6 @@ import { ToastContainer } from './components/ToastContainer';
 import { SmoothScroll } from './components/motion/SmoothScroll';
 import { PageTransition } from './components/motion/PageTransition';
 
-// Route Pages
 import { HomePage } from './pages/HomePage';
 import { StorePage } from './pages/StorePage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
@@ -32,7 +27,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { LoginPage, SignupPage, GoogleCallbackPage } from './pages/AuthPages';
 import { ShippingPolicyPage, RefundPolicyPage, PrivacyPolicyPage, TermsPage } from './pages/PolicyPages';
 
-// Admin Suite Pages
+import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminProductsPage } from './pages/admin/AdminProductsPage';
 import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
@@ -42,9 +37,22 @@ import { AdminAnalyticsPage } from './pages/admin/AdminAnalyticsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 import { AdminActivityPage } from './pages/admin/AdminActivityPage';
 
+const AdminGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated } = useAdminAuth();
+  const { navigate, currentPath } = useRouter();
+
+  React.useEffect(() => {
+    if (!isAuthenticated && currentPath !== '/admin/login') {
+      navigate('/admin/login');
+    }
+  }, [isAuthenticated, currentPath, navigate]);
+
+  if (!isAuthenticated) return null;
+  return <>{children}</>;
+};
+
 const AppContent: React.FC = () => {
   const { currentPath, isProductDetail } = useRouter();
-
   const isAdminRoute = currentPath.startsWith('/admin');
 
   const renderActiveRoute = () => {
@@ -94,31 +102,63 @@ const AppContent: React.FC = () => {
       case '/terms':
         return <TermsPage />;
 
-      // Admin Suite Routes
+      case '/admin/login':
+        return <AdminLoginPage />;
       case '/admin':
       case '/admin/dashboard':
-        return <AdminDashboardPage />;
+        return (
+          <AdminGate>
+            <AdminDashboardPage />
+          </AdminGate>
+        );
       case '/admin/products':
-        return <AdminProductsPage />;
+        return (
+          <AdminGate>
+            <AdminProductsPage />
+          </AdminGate>
+        );
       case '/admin/orders':
-        return <AdminOrdersPage />;
+        return (
+          <AdminGate>
+            <AdminOrdersPage />
+          </AdminGate>
+        );
       case '/admin/customers':
-        return <AdminCustomersPage />;
+        return (
+          <AdminGate>
+            <AdminCustomersPage />
+          </AdminGate>
+        );
       case '/admin/coupons':
-        return <AdminCouponsPage />;
+        return (
+          <AdminGate>
+            <AdminCouponsPage />
+          </AdminGate>
+        );
       case '/admin/analytics':
-        return <AdminAnalyticsPage />;
+        return (
+          <AdminGate>
+            <AdminAnalyticsPage />
+          </AdminGate>
+        );
       case '/admin/settings':
-        return <AdminSettingsPage />;
+        return (
+          <AdminGate>
+            <AdminSettingsPage />
+          </AdminGate>
+        );
       case '/admin/activity':
-        return <AdminActivityPage />;
+        return (
+          <AdminGate>
+            <AdminActivityPage />
+          </AdminGate>
+        );
 
       default:
         return <HomePage />;
     }
   };
 
-  // Dedicated Admin layout container without client header/footer clutter
   if (isAdminRoute) {
     return (
       <div className="min-h-screen bg-[#f5f4ef] text-[#1a1c18] font-sans antialiased selection:bg-[#dac5a7] selection:text-[#1a1c18]">
@@ -130,24 +170,15 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f2f2ef] text-[#1a1c18] font-sans antialiased selection:bg-[#dac5a7] selection:text-[#1a1c18]">
-      {/* Sticky Blurred Global Navigation */}
       <Navbar />
-
-      {/* Main Routed Page Content (Opaque curtain with peel shadow above fixed footer) */}
       <main className="flex-1 w-full relative z-10 min-h-screen bg-[#f2f2ef] shadow-[0_30px_60px_rgba(0,0,0,0.14)]">
-        <PageTransition>
-          {renderActiveRoute()}
-        </PageTransition>
+        <PageTransition>{renderActiveRoute()}</PageTransition>
       </main>
-
-      {/* Global Interactive Overlays */}
       <CartDrawer />
       <WishlistDrawer />
       <SearchModal />
       <QuickViewModal />
       <ToastContainer />
-
-      {/* Curtain Footer Reveal */}
       <Footer />
     </div>
   );
@@ -157,9 +188,11 @@ export default function App() {
   return (
     <RouterProvider>
       <CommerceProvider>
-        <SmoothScroll>
-          <AppContent />
-        </SmoothScroll>
+        <AdminAuthProvider>
+          <SmoothScroll>
+            <AppContent />
+          </SmoothScroll>
+        </AdminAuthProvider>
       </CommerceProvider>
     </RouterProvider>
   );

@@ -1,8 +1,60 @@
+# Dependencies
 node_modules/
-build/
+.pnp
+.pnp.js
+.pnpm-store/
+
+# Builds & caches
 dist/
+build/
+out/
+.next/
+.turbo/
+.vercel/
+.cache/
+*.tsbuildinfo
 coverage/
-.DS_Store
+.nyc_output/
+
+# Logs & debug
+logs/
 *.log
-.env*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment & secrets
+.env
+.env.*
 !.env.example
+!.env*.example
+
+# Editors & OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# Test / temp
+.tmp/
+tmp/
+temp/
+*.local
+
+# Package manager locks (keep one; ignore accidental duplicates)
+# package-lock.json is kept for npm users of the Vite app
+
+# Misc
+*.pem
+.eslintcache
+server.js
+Ref/
+apps/admin/
+apps/web/
+.env.example
+.env.example

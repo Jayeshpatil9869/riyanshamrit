@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, Link } from '../../context/RouterContext';
 import { useCommerce } from '../../context/CommerceContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useAdminAuth } from '../../context/AdminAuthContext';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   LayoutDashboard,
   Package,
@@ -13,62 +14,70 @@ import {
   History,
   Store,
   Bell,
-  Search,
   Menu,
   X,
   ChevronRight,
-  ShieldCheck,
   LogOut,
-  Sparkles,
   ArrowUpRight,
-  AlertCircle
 } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  activeTab: 'dashboard' | 'products' | 'orders' | 'customers' | 'coupons' | 'analytics' | 'settings' | 'activity';
+  activeTab:
+    | 'dashboard'
+    | 'products'
+    | 'orders'
+    | 'customers'
+    | 'coupons'
+    | 'analytics'
+    | 'settings'
+    | 'activity';
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab }) => {
   const { navigate } = useRouter();
   const {
-    user,
-    logout,
     orders,
     products,
     coupons,
     activityLogs,
-    loginAsDemoAdmin,
-    loginAsDemoPatron
+    syncAdminFromBackend,
+    adminBackendConnected,
+    addToast,
   } = useCommerce();
+  const { user, logout, isAuthenticated } = useAdminAuth();
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/admin/login');
+      return;
+    }
+    void syncAdminFromBackend().catch((err) => {
+      addToast(err instanceof Error ? err.message : 'Failed to sync admin data', 'error');
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
 
   const pendingOrdersCount = orders.filter(
-    (o) => (o.status || 'confirmed') === 'confirmed' || o.fulfillmentStatus === 'Processing'
+    (o) => (o.status || 'confirmed') === 'confirmed' || o.fulfillmentStatus === 'Processing',
   ).length;
 
   const lowStockCount = products.filter(
-    (p) => !p.inStock || (p.stockCount !== undefined && p.stockCount < 15)
+    (p) => !p.inStock || (p.stockCount !== undefined && p.stockCount < 15),
   ).length;
 
   const navItems = [
-    {
-      id: 'dashboard',
-      label: 'Dashboard',
-      icon: LayoutDashboard,
-      path: '/admin',
-      badge: null
-    },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/admin', badge: null as string | null },
     {
       id: 'products',
       label: 'Formulations Catalog',
       icon: Package,
       path: '/admin/products',
       badge: lowStockCount > 0 ? `${lowStockCount} alert` : null,
-      badgeColor: 'bg-amber-100 text-amber-800'
+      badgeColor: 'bg-amber-100 text-amber-800',
     },
     {
       id: 'orders',
@@ -76,52 +85,31 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
       icon: ShoppingBag,
       path: '/admin/orders',
       badge: pendingOrdersCount > 0 ? `${pendingOrdersCount} pending` : null,
-      badgeColor: 'bg-[#3c4433] text-[#dac5a7]'
+      badgeColor: 'bg-[#3c4433] text-[#dac5a7]',
     },
-    {
-      id: 'customers',
-      label: 'Patrons & Users',
-      icon: Users,
-      path: '/admin/customers',
-      badge: null
-    },
+    { id: 'customers', label: 'Patrons & Users', icon: Users, path: '/admin/customers', badge: null },
     {
       id: 'coupons',
       label: 'Promos & Coupons',
       icon: Tag,
       path: '/admin/coupons',
       badge: `${coupons.filter((c) => c.isActive).length} active`,
-      badgeColor: 'bg-emerald-100 text-emerald-800'
+      badgeColor: 'bg-emerald-100 text-emerald-800',
     },
-    {
-      id: 'analytics',
-      label: 'Revenue Analytics',
-      icon: BarChart3,
-      path: '/admin/analytics',
-      badge: null
-    },
-    {
-      id: 'settings',
-      label: 'Storefront Settings',
-      icon: Settings,
-      path: '/admin/settings',
-      badge: null
-    },
-    {
-      id: 'activity',
-      label: 'Audit & Activity Log',
-      icon: History,
-      path: '/admin/activity',
-      badge: null
-    }
+    { id: 'analytics', label: 'Revenue Analytics', icon: BarChart3, path: '/admin/analytics', badge: null },
+    { id: 'settings', label: 'Storefront Settings', icon: Settings, path: '/admin/settings', badge: null },
+    { id: 'activity', label: 'Audit & Activity Log', icon: History, path: '/admin/activity', badge: null },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f4ef] text-[#1a1c18] flex flex-col lg:flex-row antialiased font-sans">
-      {/* ================= DESKTOP SIDEBAR ================= */}
       <aside className="hidden lg:flex w-72 bg-[#1e1f1c] text-[#eae6df] flex-col justify-between shrink-0 border-r border-white/10 z-30 sticky top-0 h-screen overflow-y-auto">
         <div>
-          {/* Brand Header */}
           <div className="p-6 border-b border-white/10">
             <Link to="/admin" className="flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-2xl bg-[#3c4433] border border-[#dac5a7]/30 flex items-center justify-center text-[#dac5a7] font-serif font-bold text-lg shadow-inner group-hover:scale-105 transition-transform">
@@ -138,7 +126,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
             </Link>
           </div>
 
-          {/* Navigation Links */}
           <nav className="p-4 space-y-1.5">
             <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.2em] text-[#dac5a7]/60">
               Management Suite
@@ -175,9 +162,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
           </nav>
         </div>
 
-        {/* Bottom Storefront & User Card */}
         <div className="p-4 border-t border-white/10 space-y-3">
-          {/* Quick link to live store */}
           <Link
             to="/"
             className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-[#dac5a7] border border-white/10 transition-colors"
@@ -189,7 +174,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
             <ArrowUpRight className="w-3.5 h-3.5 opacity-70" />
           </Link>
 
-          {/* Admin user status pill */}
           <div className="p-3 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-[#3c4433] text-[#dac5a7] flex items-center justify-center font-serif text-sm font-bold">
@@ -198,15 +182,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
               <div className="overflow-hidden">
                 <p className="text-xs font-medium text-white truncate">{user?.name || 'Administrator'}</p>
                 <span className="text-[10px] font-mono text-[#757d5c] block uppercase">
-                  {user?.role === 'admin' ? 'Super Admin' : 'Staff Admin'}
+                  {adminBackendConnected ? 'Live API' : 'Connecting…'}
                 </span>
               </div>
             </div>
             <button
-              onClick={() => {
-                logout();
-                navigate('/login');
-              }}
+              onClick={handleLogout}
               title="Sign Out"
               className="p-1.5 text-white/50 hover:text-red-400 rounded-lg hover:bg-white/10 transition-colors"
             >
@@ -216,11 +197,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
         </div>
       </aside>
 
-      {/* ================= MAIN CONTENT WRAPPER ================= */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        {/* Top Header Bar */}
         <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-[rgba(26,28,24,0.08)] px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
-          {/* Left: Mobile trigger & breadcrumb */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileNavOpen(true)}
@@ -228,51 +206,31 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
             >
               <Menu className="w-5 h-5" />
             </button>
-
             <div className="flex items-center gap-2 text-xs">
               <span className="font-mono text-[#757d5c] uppercase text-[11px] font-semibold hidden sm:inline">
                 Apothecary Administration
               </span>
               <ChevronRight className="w-3.5 h-3.5 text-[#1a1c18]/30 hidden sm:inline" />
-              <span className="font-medium text-[#1a1c18] capitalize">
-                {activeTab.replace('-', ' ')}
-              </span>
+              <span className="font-medium text-[#1a1c18] capitalize">{activeTab.replace('-', ' ')}</span>
             </div>
           </div>
 
-          {/* Right: Quick actions, notifications, live status */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* System Status Pill */}
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full text-[11px] font-mono font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Dispensary Live</span>
+            <div
+              className={`hidden md:flex items-center gap-1.5 px-3 py-1 border rounded-full text-[11px] font-mono font-medium ${
+                adminBackendConnected
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-amber-50 text-amber-800 border-amber-200'
+              }`}
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  adminBackendConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                }`}
+              />
+              <span>{adminBackendConnected ? 'API Connected' : 'Syncing'}</span>
             </div>
 
-            {/* Quick Demo Switcher */}
-            <div className="hidden sm:flex items-center gap-1 bg-[#f2f2ef] p-1 rounded-full border border-[rgba(26,28,24,0.08)] text-[11px]">
-              <button
-                onClick={loginAsDemoAdmin}
-                className={`px-2.5 py-0.5 rounded-full font-medium transition-all ${
-                  user?.role === 'admin'
-                    ? 'bg-[#1a1c18] text-white shadow-xs'
-                    : 'text-[#1a1c18]/60 hover:text-[#1a1c18]'
-                }`}
-              >
-                Admin Mode
-              </button>
-              <button
-                onClick={loginAsDemoPatron}
-                className={`px-2.5 py-0.5 rounded-full font-medium transition-all ${
-                  user?.role !== 'admin'
-                    ? 'bg-[#1a1c18] text-white shadow-xs'
-                    : 'text-[#1a1c18]/60 hover:text-[#1a1c18]'
-                }`}
-              >
-                Patron View
-              </button>
-            </div>
-
-            {/* Notifications Popover Trigger */}
             <div className="relative">
               <button
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
@@ -284,7 +242,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
                   <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-[#757d5c] rounded-full" />
                 )}
               </button>
-
               <AnimatePresence>
                 {isNotifOpen && (
                   <motion.div
@@ -306,7 +263,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
                         View Full Audit
                       </button>
                     </div>
-
                     <div className="max-h-64 overflow-y-auto divide-y divide-[rgba(26,28,24,0.04)] space-y-1">
                       {activityLogs.slice(0, 5).map((log) => (
                         <div key={log.id} className="py-2 text-xs space-y-0.5">
@@ -323,7 +279,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
               </AnimatePresence>
             </div>
 
-            {/* Back to Client Store Button */}
             <Link
               to="/"
               className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white text-xs font-medium rounded-full shadow-xs transition-colors"
@@ -334,13 +289,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
           </div>
         </header>
 
-        {/* Dynamic Admin Body View */}
-        <main className="flex-1 p-4 sm:p-8 lg:p-10 max-w-7xl w-full mx-auto space-y-8">
-          {children}
-        </main>
+        <main className="flex-1 p-4 sm:p-8 lg:p-10 max-w-7xl w-full mx-auto space-y-8">{children}</main>
       </div>
 
-      {/* ================= MOBILE DRAWER ================= */}
       <AnimatePresence>
         {isMobileNavOpen && (
           <motion.div
@@ -370,7 +321,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-
                 <nav className="space-y-1">
                   {navItems.map((item) => {
                     const Icon = item.icon;
@@ -383,40 +333,23 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
                           navigate(item.path);
                         }}
                         className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-medium transition-colors ${
-                          isActive
-                            ? 'bg-[#3c4433] text-[#dac5a7] font-semibold'
-                            : 'text-white/70 hover:bg-white/5'
+                          isActive ? 'bg-[#3c4433] text-[#dac5a7] font-semibold' : 'text-white/70 hover:bg-white/5'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <Icon className="w-4 h-4" />
                           <span>{item.label}</span>
                         </div>
-                        {item.badge && (
-                          <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white font-bold">
-                            {item.badge}
-                          </span>
-                        )}
                       </button>
                     );
                   })}
                 </nav>
               </div>
-
               <div className="pt-6 border-t border-white/10 space-y-2">
-                <Link
-                  to="/"
-                  onClick={() => setIsMobileNavOpen(false)}
-                  className="w-full py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-[#dac5a7] flex items-center justify-center gap-2"
-                >
-                  <Store className="w-4 h-4" />
-                  <span>Exit to Storefront</span>
-                </Link>
                 <button
                   onClick={() => {
-                    logout();
                     setIsMobileNavOpen(false);
-                    navigate('/login');
+                    handleLogout();
                   }}
                   className="w-full py-2 text-center text-xs text-red-400 hover:underline"
                 >

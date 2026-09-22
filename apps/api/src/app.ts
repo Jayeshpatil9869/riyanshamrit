@@ -8,6 +8,7 @@ import {
   createSupabaseAdmin,
   createSupabaseAnon,
   loadPermissionSet,
+  loadPermissionSetViaRest,
   verifyBearerUser,
 } from "@riyanshamrit/auth";
 import { createRedis } from "@riyanshamrit/cache";
@@ -85,9 +86,8 @@ export async function buildApp() {
   await app.register(cors, {
     origin: [
       process.env.APP_URL ?? "http://localhost:3000",
-      process.env.ADMIN_URL ?? "http://localhost:3050",
-      "http://localhost:3050",
-      "http://127.0.0.1:3050",
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
     ],
     credentials: true,
   });
@@ -122,6 +122,8 @@ export async function buildApp() {
     req.user = user;
     if (user && db) {
       req.permissions = await loadPermissionSet(db, user.id);
+    } else if (user && supabaseAnon) {
+      req.permissions = await loadPermissionSetViaRest(supabaseAnon, user.id);
     } else {
       req.permissions = new Set();
     }

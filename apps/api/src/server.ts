@@ -1,4 +1,12 @@
-import { buildApp } from "./app.js";
+import { config } from "dotenv";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = resolve(fileURLToPath(new URL(".", import.meta.url)), "../../..");
+config({ path: resolve(root, ".env") });
+config({ path: resolve(root, "apps/api/.env") });
+
+const { buildApp } = await import("./app.js");
 
 const port = Number(process.env.API_PORT ?? 4000);
 

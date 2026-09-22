@@ -12,6 +12,24 @@ import {
   AdminActivityLog
 } from '../types';
 import { RIYANSH_PRODUCTS } from '../data/products';
+import {
+  createAdminCoupon,
+  createAdminProduct,
+  deleteAdminProduct,
+  fetchAdminActivity,
+  fetchAdminCoupons,
+  fetchAdminCustomers,
+  fetchAdminOrders,
+  fetchAdminProducts,
+  getAdminToken,
+  updateAdminOrderStatus,
+  updateAdminProduct,
+  type AdminActivityRow,
+  type AdminCouponRow,
+  type AdminCustomerRow,
+  type AdminOrderRow,
+  type AdminProductRow,
+} from '../lib/adminApi';
 
 interface Toast {
   id: string;
@@ -129,6 +147,10 @@ interface CommerceContextType {
     category: AdminActivityLog['category'],
     details: string
   ) => void;
+
+  // Live admin API sync
+  adminBackendConnected: boolean;
+  syncAdminFromBackend: () => Promise<void>;
 
   // Toast
   toasts: Toast[];
@@ -614,6 +636,153 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // 12. Toasts
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [adminBackendConnected, setAdminBackendConnected] = useState(false);
+
+  const mapApiProduct = (row: AdminProductRow): Product => {
+    const price = Number(row.price) || 0;
+    const compare = Number(row.compareAtPrice ?? price) || price;
+    const image = row.imageUrl || row.images?.[0] || '/assets/images/kmKUTujRJWSYGv7PI0IVv3fdjr0.png';
+    return {
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      tagline: row.description?.slice(0, 80) || 'Ayurvedic formulation',
+      category: 'Wellness',
+      healthConcern: 'Daily wellness',
+      price,
+      compareAtPrice: compare,
+      rating: 4.8,
+      reviewCount: 0,
+      image,
+      hoverImage: image,
+      gallery: row.images?.length ? row.images : [image],
+      volume: '100 ml',
+      sku: row.slug?.toUpperCase().slice(0, 12) || 'RY-SKU',
+      inStock: row.isActive !== false && (row.stockQuantity ?? 0) > 0,
+      featured: Boolean(row.isFeatured),
+      description: row.description || '',
+      keyBenefits: [],
+      ingredients: [],
+      dosageInstructions: '',
+      certifications: [],
+      stockCount: row.stockQuantity ?? 0,
+      createdAt: undefined,
+    };
+  };
+
+  const mapApiOrder = (row: AdminOrderRow): Order => {
+    const addr = (row.shippingAddress ?? {}) as Partial<ShippingAddress>;
+    const status = String(row.status || 'pending').toLowerCase();
+    const fulfillment =
+      status === 'shipped' || status === 'in_transit'
+        ? 'In Transit'
+        : status === 'delivered'
+          ? 'Delivered'
+          : status === 'cancelled'
+            ? 'Cancelled'
+            : 'Processing';
+    return {
+      id: row.id,
+      date: row.createdAt ? new Date(row.createdAt).toLocaleDateString() : '',
+      createdAt: row.createdAt,
+      items: [],
+      shippingAddress: {
+        fullName: addr.fullName || 'Patron',
+        email: addr.email || '',
+        phone: addr.phone || '',
+        addressLine1: addr.addressLine1 || '',
+        city: addr.city || '',
+        state: addr.state || '',
+        pincode: addr.pincode || '',
+        country: addr.country || 'India',
+      },
+      subtotal: Number(row.totalAmount) || 0,
+      discount: 0,
+      shippingFee: 0,
+      total: Number(row.totalAmount) || 0,
+      currency: 'INR',
+      paymentMethod: 'PayU',
+      paymentStatus: status === 'paid' || status === 'delivered' || status === 'shipped' ? 'Paid' : 'Pending',
+      status,
+      fulfillmentStatus: fulfillment,
+      customerName: addr.fullName,
+      customerEmail: addr.email,
+    };
+  };
+
+  const mapApiCustomer = (row: AdminCustomerRow): User => ({
+    id: row.id,
+    name: row.fullName || row.email.split('@')[0] || 'Patron',
+    email: row.email,
+    phone: row.phone || undefined,
+    role: row.email === 'admin@riyanshamrit.com' ? 'admin' : 'customer',
+    avatar: row.avatarUrl || undefined,
+    status: 'active',
+    joinedDate: row.createdAt,
+    savedAddresses: [],
+  });
+
+  const mapApiCoupon = (row: AdminCouponRow): Coupon => ({
+    id: row.id,
+    code: row.code,
+    discountType:
+      row.discountType === 'fixed' || row.discountType === 'fixed_amount'
+        ? 'fixed'
+        : 'percentage',
+    value: Number(row.discountValue) || 0,
+    minSpend: Number(row.minOrderAmount ?? 0) || 0,
+    usageCount: row.redemptionCount ?? 0,
+    maxUses: row.maxRedemptions ?? undefined,
+    expiryDate: row.endsAt ? String(row.endsAt).slice(0, 10) : undefined,
+    isActive: row.isActive !== false,
+    description: row.description || '',
+  });
+
+  const mapApiActivity = (row: AdminActivityRow): AdminActivityLog => {
+    const entity = String(row.entityType || 'system');
+    const category: AdminActivityLog['category'] =
+      entity.includes('product')
+        ? 'products'
+        : entity.includes('order')
+          ? 'orders'
+          : entity.includes('coupon')
+            ? 'coupons'
+            : entity.includes('user') || entity.includes('customer')
+              ? 'customers'
+              : 'settings';
+    return {
+      id: row.id,
+      action: row.action,
+      category,
+      details: row.description,
+      timestamp: row.createdAt
+        ? new Date(row.createdAt).toLocaleString()
+        : new Date().toLocaleString(),
+      adminName: 'Administrator',
+    };
+  };
+
+  const syncAdminFromBackend = async () => {
+    if (!getAdminToken()) {
+      setAdminBackendConnected(false);
+      return;
+    }
+    const [productRes, orderRes, customerRes, couponRes, activityRes] =
+      await Promise.all([
+        fetchAdminProducts(),
+        fetchAdminOrders(),
+        fetchAdminCustomers(),
+        fetchAdminCoupons().catch(() => ({ items: [] as AdminCouponRow[] })),
+        fetchAdminActivity().catch(() => ({ items: [] as AdminActivityRow[] })),
+      ]);
+
+    setProducts(productRes.items.map(mapApiProduct));
+    setOrders(orderRes.items.map(mapApiOrder));
+    setUsers(customerRes.items.map(mapApiCustomer));
+    if (couponRes.items.length) setCoupons(couponRes.items.map(mapApiCoupon));
+    if (activityRes.items.length) setActivityLogs(activityRes.items.map(mapApiActivity));
+    setAdminBackendConnected(true);
+  };
 
   // LocalStorage synchronizers
   useEffect(() => {
@@ -803,7 +972,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     addToast('Wishlist cleared', 'info');
   };
 
-  // Product Catalog CRUD (Reactive)
+  // Product Catalog CRUD (Reactive + API)
   const addProduct = (newProdData: Omit<Product, 'id'>): Product => {
     const id = `prod-${Date.now()}`;
     const newProduct: Product = {
@@ -816,6 +985,23 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setProducts((prev) => [newProduct, ...prev]);
     logAdminAction(`Added formulation "${newProduct.name}"`, 'products', `SKU: ${newProduct.sku}, Price: ₹${newProduct.price}`);
     addToast(`Created formulation "${newProduct.name}"`, 'success');
+
+    if (adminBackendConnected || getAdminToken()) {
+      void createAdminProduct({
+        name: newProduct.name,
+        slug: newProduct.slug,
+        description: newProduct.description,
+        price: newProduct.price,
+        compareAtPrice: newProduct.compareAtPrice,
+        imageUrl: newProduct.image,
+        images: newProduct.gallery,
+        stockQuantity: newProduct.stockCount ?? 0,
+        isFeatured: Boolean(newProduct.featured),
+        isActive: newProduct.inStock,
+      })
+        .then(() => syncAdminFromBackend())
+        .catch((err) => addToast(err instanceof Error ? err.message : 'API create failed', 'error'));
+    }
     return newProduct;
   };
 
@@ -831,6 +1017,23 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       })
     );
     addToast('Product details updated', 'success');
+
+    if (adminBackendConnected || getAdminToken()) {
+      const patch: Record<string, unknown> = {};
+      if (updates.name != null) patch.name = updates.name;
+      if (updates.slug != null) patch.slug = updates.slug;
+      if (updates.description != null) patch.description = updates.description;
+      if (updates.price != null) patch.price = updates.price;
+      if (updates.compareAtPrice != null) patch.compareAtPrice = updates.compareAtPrice;
+      if (updates.image != null) patch.imageUrl = updates.image;
+      if (updates.gallery != null) patch.images = updates.gallery;
+      if (updates.stockCount != null) patch.stockQuantity = updates.stockCount;
+      if (updates.featured != null) patch.isFeatured = updates.featured;
+      if (updates.inStock != null) patch.isActive = updates.inStock;
+      void updateAdminProduct(id, patch)
+        .then(() => syncAdminFromBackend())
+        .catch((err) => addToast(err instanceof Error ? err.message : 'API update failed', 'error'));
+    }
   };
 
   const deleteProduct = (id: string) => {
@@ -840,6 +1043,12 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       logAdminAction(`Archived formulation "${target.name}"`, 'products', `Removed from store catalog`);
     }
     addToast('Product archived from catalog', 'info');
+
+    if (adminBackendConnected || getAdminToken()) {
+      void deleteAdminProduct(id)
+        .then(() => syncAdminFromBackend())
+        .catch((err) => addToast(err instanceof Error ? err.message : 'API archive failed', 'error'));
+    }
   };
 
   const resetProductsToDefault = () => {
@@ -1093,6 +1302,20 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       })
     );
     addToast(`Order ${orderId} updated to "${fulfillmentStatus}"`, 'success');
+
+    if (adminBackendConnected || getAdminToken()) {
+      const apiStatus =
+        fulfillmentStatus === 'In Transit' || status === 'in_transit'
+          ? 'shipped'
+          : fulfillmentStatus === 'Delivered' || status === 'delivered'
+            ? 'delivered'
+            : fulfillmentStatus === 'Cancelled' || status === 'cancelled'
+              ? 'cancelled'
+              : 'processing';
+      void updateAdminOrderStatus(orderId, apiStatus)
+        .then(() => syncAdminFromBackend())
+        .catch((err) => addToast(err instanceof Error ? err.message : 'Order sync failed', 'error'));
+    }
   };
 
   const cancelOrder = (orderId: string, reason = 'Cancelled by store administration') => {
@@ -1101,6 +1324,11 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     );
     logAdminAction(`Order ${orderId} Cancelled`, 'orders', reason);
     addToast(`Order ${orderId} cancelled`, 'info');
+    if (adminBackendConnected || getAdminToken()) {
+      void updateAdminOrderStatus(orderId, 'cancelled')
+        .then(() => syncAdminFromBackend())
+        .catch((err) => addToast(err instanceof Error ? err.message : 'Cancel sync failed', 'error'));
+    }
   };
 
   // Coupons Admin operations
@@ -1242,6 +1470,9 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         activityLogs,
         logAdminAction,
+
+        adminBackendConnected,
+        syncAdminFromBackend,
 
         toasts,
         addToast,

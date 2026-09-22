@@ -1,14 +1,20 @@
 {
-  "name": "react-example",
+  "name": "riyanshamrit",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
+    "dev:web": "vite --port=3000 --host=0.0.0.0",
+    "dev:api": "pnpm --filter @riyanshamrit/api dev",
+    "dev:all": "pnpm run dev:api & pnpm run dev:web",
     "build": "vite build",
+    "build:api": "pnpm --filter @riyanshamrit/api build",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "clean": "rimraf dist",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -37,6 +43,6 @@
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
-    "typescript": "^7.0.2"
+    "typescript": "^5.8.3"
   }
 }

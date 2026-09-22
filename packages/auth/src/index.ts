@@ -20,6 +20,19 @@ export function createSupabaseAnon(url: string, anonKey: string) {
   });
 }
 
+export function createSupabaseUserClient(
+  url: string,
+  anonKey: string,
+  accessToken: string,
+) {
+  return createClient(url, anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  });
+}
+
 export async function verifyBearerUser(
   supabase: SupabaseClient,
   authorizationHeader: string | undefined,
@@ -45,6 +58,33 @@ export async function loadPermissionSet(
     .where(eq(userRoles.userId, userId));
 
   return new Set(rows.map((r) => r.code));
+}
+
+export async function loadPermissionSetViaRest(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<Set<string>> {
+  const { data: roleRows, error: roleErr } = await supabase
+    .from("user_roles")
+    .select("role_id")
+    .eq("user_id", userId);
+  if (roleErr || !roleRows?.length) return new Set();
+
+  const roleIds = roleRows.map((r) => r.role_id as string);
+  const { data: rpRows, error: rpErr } = await supabase
+    .from("role_permissions")
+    .select("permission_id")
+    .in("role_id", roleIds);
+  if (rpErr || !rpRows?.length) return new Set();
+
+  const permIds = rpRows.map((r) => r.permission_id as string);
+  const { data: permRows, error: permErr } = await supabase
+    .from("permissions")
+    .select("code")
+    .in("id", permIds);
+  if (permErr || !permRows?.length) return new Set();
+
+  return new Set(permRows.map((p) => p.code as string));
 }
 
 export function hasPermission(
