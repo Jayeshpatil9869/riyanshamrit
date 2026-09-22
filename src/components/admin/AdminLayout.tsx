@@ -95,16 +95,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
       badgeColor: 'bg-[#3c4433] text-[#dac5a7]',
     },
     { id: 'customers', label: 'Patrons & Users', icon: Users, path: '/admin/customers', badge: null },
-    {
-      id: 'coupons',
-      label: 'Promos & Coupons',
-      icon: Tag,
-      path: '/admin/coupons',
-      badge: `${coupons.filter((c) => c.isActive).length} active`,
-      badgeColor: 'bg-emerald-100 text-emerald-800',
-    },
     { id: 'analytics', label: 'Revenue Analytics', icon: BarChart3, path: '/admin/analytics', badge: null },
-    { id: 'settings', label: 'Storefront Settings', icon: Settings, path: '/admin/settings', badge: null },
     { id: 'activity', label: 'Audit & Activity Log', icon: History, path: '/admin/activity', badge: null },
   ];
 
@@ -170,16 +161,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
         </div>
 
         <div className="p-4 border-t border-white/10 space-y-3">
-          <Link
-            to="/"
-            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-[#dac5a7] border border-white/10 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <Store className="w-3.5 h-3.5" />
-              <span>Live Storefront</span>
-            </div>
-            <ArrowUpRight className="w-3.5 h-3.5 opacity-70" />
-          </Link>
 
           <div className="p-3 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
@@ -223,76 +204,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <div
-              className={`hidden md:flex items-center gap-1.5 px-3 py-1 border rounded-full text-[11px] font-mono font-medium ${
-                adminBackendConnected
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                  : 'bg-amber-50 text-amber-800 border-amber-200'
-              }`}
-            >
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  adminBackendConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-                }`}
-              />
-              <span>{adminBackendConnected ? 'API Connected' : 'Syncing'}</span>
-            </div>
-
-            <div className="relative">
-              <button
-                onClick={() => setIsNotifOpen(!isNotifOpen)}
-                className="relative p-2 rounded-full bg-[#f2f2ef] hover:bg-[#eaeae5] text-[#1a1c18] transition-colors"
-                aria-label="Notifications"
-              >
-                <Bell className="w-4 h-4" />
-                {activityLogs.length > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-[#757d5c] rounded-full" />
-                )}
-              </button>
-              <AnimatePresence>
-                {isNotifOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-[rgba(26,28,24,0.1)] p-4 z-50 space-y-3"
-                  >
-                    <div className="flex items-center justify-between pb-2 border-b border-[rgba(26,28,24,0.06)]">
-                      <span className="font-serif font-semibold text-sm text-[#1a1c18]">Recent Store Events</span>
-                      <button
-                        onClick={() => {
-                          setIsNotifOpen(false);
-                          navigate('/admin/activity');
-                        }}
-                        className="text-[11px] text-[#757d5c] hover:underline font-mono"
-                      >
-                        View Full Audit
-                      </button>
-                    </div>
-                    <div className="max-h-64 overflow-y-auto divide-y divide-[rgba(26,28,24,0.04)] space-y-1">
-                      {activityLogs.slice(0, 5).map((log) => (
-                        <div key={log.id} className="py-2 text-xs space-y-0.5">
-                          <div className="flex items-center justify-between text-[11px]">
-                            <strong className="text-[#1a1c18]">{log.action}</strong>
-                            <span className="text-[#1a1c18]/40 font-mono text-[10px]">{log.timestamp}</span>
-                          </div>
-                          <p className="text-[#1a1c18]/60 text-[11px] leading-relaxed">{log.details}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            <Link
-              to="/"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white text-xs font-medium rounded-full shadow-xs transition-colors"
-            >
-              <Store className="w-3.5 h-3.5 text-[#dac5a7]" />
-              <span className="hidden xs:inline">Storefront</span>
-            </Link>
           </div>
         </header>
 

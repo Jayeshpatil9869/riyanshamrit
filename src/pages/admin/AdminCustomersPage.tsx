@@ -153,8 +153,6 @@ export const AdminCustomersPage: React.FC = () => {
             <thead>
               <tr className="bg-[#fbfbf9] border-b border-[rgba(26,28,24,0.08)] text-[10px] font-mono uppercase text-[#1a1c18]/50">
                 <th className="py-3.5 px-6 font-semibold">Patron Details</th>
-                <th className="py-3.5 px-4 font-semibold">Role</th>
-                <th className="py-3.5 px-4 font-semibold">Ayurvedic Dosha</th>
                 <th className="py-3.5 px-4 font-semibold">Orders &amp; Spend</th>
                 <th className="py-3.5 px-4 font-semibold">Status</th>
                 <th className="py-3.5 px-4 font-semibold">Registered</th>
@@ -179,27 +177,9 @@ export const AdminCustomersPage: React.FC = () => {
                     </div>
                   </td>
 
-                  {/* Role Dropdown */}
-                  <td className="py-4 px-4">
-                    <select
-                      value={user.role || 'customer'}
-                      onChange={(e) => user.id && updateUserRole(user.id, e.target.value as any)}
-                      className={`text-[10px] font-mono uppercase font-semibold px-2.5 py-1 rounded-xl border focus:outline-none cursor-pointer ${
-                        user.role === 'admin'
-                          ? 'bg-[#1a1c18] text-[#dac5a7] border-black'
-                          : 'bg-[#f2f2ef] text-[#1a1c18] border-[rgba(26,28,24,0.12)]'
-                      }`}
-                    >
-                      <option value="customer">Patron (Customer)</option>
-                      <option value="admin">Administrator</option>
-                      <option value="moderator">Apothecary Staff</option>
-                    </select>
-                  </td>
 
-                  {/* Dosha */}
-                  <td className="py-4 px-4 font-mono text-[11px] text-[#757d5c]">
-                    {user.doshaPreference || 'Tridoshic'}
-                  </td>
+
+
 
                   {/* Spend & Orders */}
                   <td className="py-4 px-4 font-mono">

@@ -297,7 +297,6 @@ export const AdminProductsPage: React.FC = () => {
                 <th className="py-3.5 px-4 font-semibold">SKU &amp; Volume</th>
                 <th className="py-3.5 px-4 font-semibold">Price (MRP)</th>
                 <th className="py-3.5 px-4 font-semibold">Stock Status</th>
-                <th className="py-3.5 px-4 font-semibold">Flags</th>
                 <th className="py-3.5 px-6 font-semibold text-right">Actions</th>
               </tr>
             </thead>
@@ -375,21 +374,7 @@ export const AdminProductsPage: React.FC = () => {
                       </button>
                     </td>
 
-                    {/* Badges / Flags */}
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-1">
-                        {product.featured && (
-                          <span className="px-2 py-0.5 bg-[#3c4433] text-[#dac5a7] rounded-md text-[9px] font-mono font-bold uppercase">
-                            Featured
-                          </span>
-                        )}
-                        {product.bestseller && (
-                          <span className="px-2 py-0.5 bg-amber-100 text-amber-900 rounded-md text-[9px] font-mono font-bold uppercase">
-                            Bestseller
-                          </span>
-                        )}
-                      </div>
-                    </td>
+
 
                     {/* Actions */}
                     <td className="py-4 px-6 text-right">

@@ -102,7 +102,7 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Card 1: Gross Sales */}
         <div className="bg-white p-6 rounded-3xl border border-[rgba(26,28,24,0.08)] shadow-xs space-y-3">
           <div className="flex items-center justify-between">
@@ -175,152 +175,9 @@ export const AdminDashboardPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Card 4: Registered Patrons */}
-        <div className="bg-white p-6 rounded-3xl border border-[rgba(26,28,24,0.08)] shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/60 font-semibold">
-              Active Patrons
-            </span>
-            <div className="p-2 rounded-xl bg-purple-50 text-purple-700">
-              <Users className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <h3 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
-              {activeCustomersCount + 128}
-            </h3>
-            <span className="flex items-center text-purple-600 text-xs font-mono font-semibold">
-              <ArrowUpRight className="w-3.5 h-3.5" />
-              +19.2%
-            </span>
-          </div>
-          <p className="text-[11px] text-[#1a1c18]/50 font-body">
-            78% repeat repurchase frequency rate
-          </p>
-        </div>
       </div>
 
-      {/* Main Grid: Revenue Visualizer & Low Stock Watchlist */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Monthly Revenue Trend */}
-        <div className="lg:col-span-2 bg-white rounded-3xl border border-[rgba(26,28,24,0.08)] p-6 sm:p-8 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(26,28,24,0.06)] gap-2">
-            <div>
-              <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block">
-                MONTHLY PERFORMANCE
-              </span>
-              <h2 className="font-serif text-xl sm:text-2xl text-[#1a1c18]">
-                Revenue Growth &amp; Order Volume
-              </h2>
-            </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#1a1c18]/60">
-              <span className="inline-block w-3 h-3 rounded-md bg-[#3c4433]" />
-              <span>Dispensary Revenue (₹)</span>
-            </div>
-          </div>
 
-          {/* Bar Chart Visualizer */}
-          <div className="h-64 flex items-end justify-between gap-3 sm:gap-6 pt-8 pb-2">
-            {monthlyRevenueData.map((d) => {
-              const heightPercent = Math.round((d.amount / maxRevenueMonth) * 100);
-              return (
-                <div key={d.month} className="flex-1 flex flex-col items-center gap-2 group">
-                  <span className="text-[10px] font-mono text-[#1a1c18]/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                    ₹{(d.amount / 1000).toFixed(1)}k
-                  </span>
-                  <div className="w-full bg-[#f2f2ef] rounded-2xl h-44 flex items-end p-1">
-                    <div
-                      style={{ height: `${heightPercent}%` }}
-                      className="w-full bg-gradient-to-t from-[#2b3323] to-[#757d5c] group-hover:to-[#dac5a7] rounded-xl transition-all duration-500 relative"
-                    />
-                  </div>
-                  <span className="text-xs font-mono font-medium text-[#1a1c18]">
-                    {d.month}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[rgba(26,28,24,0.06)] text-center text-xs">
-            <div>
-              <p className="text-[#1a1c18]/50 text-[11px] font-mono">Q3 Gross Volume</p>
-              <p className="font-serif text-base font-bold text-[#1a1c18] mt-0.5">₹2,82,800</p>
-            </div>
-            <div>
-              <p className="text-[#1a1c18]/50 text-[11px] font-mono">Top Category</p>
-              <p className="font-serif text-base font-bold text-[#3c4433] mt-0.5">Botanical Serums</p>
-            </div>
-            <div>
-              <p className="text-[#1a1c18]/50 text-[11px] font-mono">Conversion Rate</p>
-              <p className="font-serif text-base font-bold text-emerald-700 mt-0.5">4.2%</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right 1 Col: Low Stock / Critical Alerts */}
-        <div className="bg-white rounded-3xl border border-[rgba(26,28,24,0.08)] p-6 shadow-xs space-y-4 flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[rgba(26,28,24,0.06)]">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
-                <h3 className="font-serif text-lg text-[#1a1c18]">Inventory Alerts</h3>
-              </div>
-              <span className="text-[10px] font-mono uppercase bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full font-semibold">
-                {lowStockProducts.length} Items
-              </span>
-            </div>
-
-            <p className="text-xs text-[#1a1c18]/60">
-              Formulations requiring batch production or inventory replenishment.
-            </p>
-
-            <div className="space-y-3">
-              {lowStockProducts.length === 0 ? (
-                <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-xs text-center">
-                  All formulations are sufficiently stocked in the apothecary.
-                </div>
-              ) : (
-                lowStockProducts.slice(0, 4).map((prod) => (
-                  <div
-                    key={prod.id}
-                    className="p-3 bg-[#fbfbf9] rounded-2xl border border-[rgba(26,28,24,0.06)] flex items-center justify-between gap-3 text-xs"
-                  >
-                    <div className="flex items-center gap-2.5 overflow-hidden">
-                      <img
-                        src={prod.image}
-                        alt={prod.name}
-                        className="w-10 h-10 rounded-xl object-cover bg-white shrink-0 border"
-                      />
-                      <div className="truncate">
-                        <p className="font-medium text-[#1a1c18] truncate">{prod.name}</p>
-                        <span className="text-[10px] font-mono text-amber-700 font-semibold block">
-                          Stock: {prod.stockCount ?? 0} units left
-                        </span>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleQuickRestock(prod.id)}
-                      className="px-3 py-1.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-[10px] font-medium shrink-0 transition-colors"
-                    >
-                      Restock
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <button
-            onClick={() => navigate('/admin/products')}
-            className="w-full py-2.5 border border-[rgba(26,28,24,0.15)] hover:bg-[#f2f2ef] rounded-full text-xs font-medium text-[#1a1c18] flex items-center justify-center gap-1.5 transition-colors"
-          >
-            <span>Manage All Formulations</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
 
       {/* Recent Orders Dispatch Table */}
       <div className="bg-white rounded-3xl border border-[rgba(26,28,24,0.08)] p-6 sm:p-8 shadow-xs space-y-6">

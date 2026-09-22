@@ -151,7 +151,6 @@ export const AdminOrdersPage: React.FC = () => {
                 <th className="py-3.5 px-4 font-semibold">Patron &amp; Destination</th>
                 <th className="py-3.5 px-4 font-semibold">Items</th>
                 <th className="py-3.5 px-4 font-semibold">Financials</th>
-                <th className="py-3.5 px-4 font-semibold">Fulfillment Status</th>
                 <th className="py-3.5 px-4 font-semibold">Carrier / AWB</th>
                 <th className="py-3.5 px-6 font-semibold text-right">Actions</th>
               </tr>
@@ -198,31 +197,7 @@ export const AdminOrdersPage: React.FC = () => {
                       </div>
                     </td>
 
-                    {/* Status Pill with Quick Dropdown */}
-                    <td className="py-4 px-4">
-                      <select
-                        value={order.fulfillmentStatus}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          const mappedStatus = val.toLowerCase().replace(/\s+/g, '_');
-                          updateOrderStatus(order.id, mappedStatus, val);
-                        }}
-                        className={`text-[11px] font-mono uppercase font-semibold px-2.5 py-1 rounded-xl border focus:outline-none cursor-pointer ${
-                          order.fulfillmentStatus === 'Delivered'
-                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                            : order.fulfillmentStatus === 'In Transit'
-                            ? 'bg-blue-50 text-blue-800 border-blue-200'
-                            : order.fulfillmentStatus === 'Cancelled'
-                            ? 'bg-red-50 text-red-800 border-red-200'
-                            : 'bg-[#dac5a7]/30 text-[#3c4433] border-[#dac5a7]/40'
-                        }`}
-                      >
-                        <option value="Processing">Processing</option>
-                        <option value="In Transit">In Transit</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </td>
+
 
                     {/* Tracking details */}
                     <td className="py-4 px-4 text-[11px] font-mono">
