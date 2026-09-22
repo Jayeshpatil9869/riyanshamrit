@@ -37,6 +37,7 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 *.swp
 *.swo
 
@@ -46,9 +47,6 @@ tmp/
 temp/
 *.local
 
-# Package manager locks (keep one; ignore accidental duplicates)
-# package-lock.json is kept for npm users of the Vite app
-
 # Misc
 *.pem
 .eslintcache
@@ -56,5 +54,3 @@ server.js
 Ref/
 apps/admin/
 apps/web/
-.env.example
-.env.example

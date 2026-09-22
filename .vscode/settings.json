@@ -1,0 +1,14 @@
+{
+  "files.exclude": {
+    "**/apps/admin": true,
+    "**/apps/web": true
+  },
+  "files.watcherExclude": {
+    "**/apps/admin/**": true,
+    "**/apps/web/**": true
+  },
+  "search.exclude": {
+    "**/apps/admin": true,
+    "**/apps/web": true
+  }
+}

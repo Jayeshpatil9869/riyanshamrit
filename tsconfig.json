@@ -33,6 +33,9 @@
     "node_modules",
     "dist",
     "Ref",
-    "reference"
+    "reference",
+    "apps/admin",
+    "apps/web",
+    "apps/api"
   ]
 }

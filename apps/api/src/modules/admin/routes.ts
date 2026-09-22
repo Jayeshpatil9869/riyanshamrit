@@ -126,6 +126,46 @@ export async function registerAdminRoutes(app: AppInstance, ctx: RouteCtx) {
     );
   });
 
+  app.post("/api/v1/admin/auth/refresh", async (req) => {
+    if (!ctx.supabaseAnon) {
+      throw fail("AUTH_UNAVAILABLE", "Auth not configured", 503, req.id);
+    }
+    const body = (req.body ?? {}) as { refreshToken?: string };
+    const refreshToken = String(body.refreshToken ?? "").trim();
+    if (!refreshToken) {
+      throw fail("BAD_REQUEST", "Refresh token required", 400, req.id);
+    }
+
+    const { data, error } = await ctx.supabaseAnon.auth.refreshSession({
+      refresh_token: refreshToken,
+    });
+    if (error || !data.session || !data.user) {
+      throw fail("UNAUTHORIZED", "Invalid or expired refresh token", 401, req.id);
+    }
+
+    const permissions = ctx.db
+      ? await loadPermissionSet(ctx.db, data.user.id)
+      : await loadPermissionSetViaRest(ctx.supabaseAnon, data.user.id);
+
+    return ok(
+      {
+        accessToken: data.session.access_token,
+        refreshToken: data.session.refresh_token,
+        expiresAt: data.session.expires_at,
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          name:
+            (data.user.user_metadata?.full_name as string | undefined) ??
+            "Administrator",
+          role: "admin" as const,
+        },
+        permissions: [...permissions],
+      },
+      req.id,
+    );
+  });
+
   app.get("/api/v1/admin/me", async (req) => {
     const user = requireUser(req);
     return ok(

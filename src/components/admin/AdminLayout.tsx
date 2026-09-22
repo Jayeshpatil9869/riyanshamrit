@@ -56,7 +56,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
       return;
     }
     void syncAdminFromBackend().catch((err) => {
-      addToast(err instanceof Error ? err.message : 'Failed to sync admin data', 'error');
+      const msg = err instanceof Error ? err.message : 'Failed to sync admin data';
+      if (msg.includes('Authentication required') || msg.includes('401')) {
+        logout();
+        navigate('/admin/login');
+        addToast('Admin session expired. Please sign in again.', 'info');
+      } else {
+        addToast(msg, 'error');
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);

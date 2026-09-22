@@ -130,13 +130,36 @@ export async function buildApp() {
   });
 
   app.setErrorHandler((err, req, reply) => {
-    logger.error({ err, requestId: req.id }, "request failed");
-    const error = err as Error & { statusCode?: number };
+    const error = err as Error & { statusCode?: number; code?: string };
     const status = error.statusCode ?? 500;
+    if (status >= 500) {
+      logger.error({ err, requestId: req.id }, "server error");
+    } else {
+      logger.warn(
+        {
+          code: error.code ?? (status === 401 ? "UNAUTHORIZED" : status === 403 ? "FORBIDDEN" : status === 404 ? "NOT_FOUND" : "CLIENT_ERROR"),
+          statusCode: status,
+          message: error.message,
+          path: req.url,
+          requestId: req.id,
+        },
+        "request failed",
+      );
+    }
     reply.status(status).send({
       success: false,
       error: {
-        code: status === 400 ? "BAD_REQUEST" : "INTERNAL_ERROR",
+        code:
+          error.code ??
+          (status === 400
+            ? "BAD_REQUEST"
+            : status === 401
+              ? "UNAUTHORIZED"
+              : status === 403
+                ? "FORBIDDEN"
+                : status === 404
+                  ? "NOT_FOUND"
+                  : "INTERNAL_ERROR"),
         message:
           status >= 500
             ? "Something went wrong"

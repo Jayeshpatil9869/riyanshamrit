@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -32,6 +33,17 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({
     getStoredAdminUser(),
   );
   const [token, setToken] = useState<string | null>(() => getAdminToken());
+
+  useEffect(() => {
+    const handleExpired = () => {
+      setUser(null);
+      setToken(null);
+    };
+    window.addEventListener("admin:session_expired", handleExpired);
+    return () => {
+      window.removeEventListener("admin:session_expired", handleExpired);
+    };
+  }, []);
 
   const login = useCallback(async (username: string, password: string) => {
     const data = await adminLogin(username, password);

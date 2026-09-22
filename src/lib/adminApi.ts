@@ -26,6 +26,14 @@ export function getAdminToken(): string | null {
   }
 }
 
+export function getAdminRefreshToken(): string | null {
+  try {
+    return localStorage.getItem(REFRESH_KEY);
+  } catch {
+    return null;
+  }
+}
+
 export function getStoredAdminUser(): AdminSessionUser | null {
   try {
     const raw = localStorage.getItem(USER_KEY);
@@ -57,9 +65,65 @@ export function saveAdminSession(payload: {
   localStorage.setItem(USER_KEY, JSON.stringify(payload.user));
 }
 
+let refreshPromise: Promise<string | null> | null = null;
+
+export async function refreshAdminSession(): Promise<string | null> {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    const refreshToken = getAdminRefreshToken();
+    if (!refreshToken) {
+      clearAdminSession();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("admin:session_expired"));
+      }
+      return null;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/admin/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+      const json = (await res.json().catch(() => ({}))) as ApiEnvelope<{
+        accessToken: string;
+        refreshToken: string;
+        user: AdminSessionUser;
+      }>;
+
+      if (!res.ok || !json.success || !json.data?.accessToken) {
+        clearAdminSession();
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("admin:session_expired"));
+        }
+        return null;
+      }
+
+      saveAdminSession({
+        accessToken: json.data.accessToken,
+        refreshToken: json.data.refreshToken,
+        user: json.data.user,
+      });
+      return json.data.accessToken;
+    } catch {
+      clearAdminSession();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("admin:session_expired"));
+      }
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
 async function adminFetch<T>(
   path: string,
   init: RequestInit = {},
+  isRetry = false,
 ): Promise<T> {
   const token = getAdminToken();
   const headers = new Headers(init.headers);
@@ -67,8 +131,23 @@ async function adminFetch<T>(
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
   const res = await fetch(`${API_BASE}${path}`, { ...init, headers });
+
+  if (res.status === 401 && !isRetry && !path.includes("/auth/")) {
+    const newToken = await refreshAdminSession();
+    if (newToken) {
+      return adminFetch<T>(path, init, true);
+    }
+    throw new Error("Authentication required");
+  }
+
   const json = (await res.json().catch(() => ({}))) as ApiEnvelope<T>;
   if (!res.ok || json.success === false) {
+    if (res.status === 401) {
+      clearAdminSession();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("admin:session_expired"));
+      }
+    }
     throw new Error(json.error?.message || `Request failed (${res.status})`);
   }
   return json.data as T;

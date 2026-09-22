@@ -767,21 +767,26 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setAdminBackendConnected(false);
       return;
     }
-    const [productRes, orderRes, customerRes, couponRes, activityRes] =
-      await Promise.all([
-        fetchAdminProducts(),
-        fetchAdminOrders(),
-        fetchAdminCustomers(),
-        fetchAdminCoupons().catch(() => ({ items: [] as AdminCouponRow[] })),
-        fetchAdminActivity().catch(() => ({ items: [] as AdminActivityRow[] })),
-      ]);
+    try {
+      const [productRes, orderRes, customerRes, couponRes, activityRes] =
+        await Promise.all([
+          fetchAdminProducts(),
+          fetchAdminOrders(),
+          fetchAdminCustomers(),
+          fetchAdminCoupons().catch(() => ({ items: [] as AdminCouponRow[] })),
+          fetchAdminActivity().catch(() => ({ items: [] as AdminActivityRow[] })),
+        ]);
 
-    setProducts(productRes.items.map(mapApiProduct));
-    setOrders(orderRes.items.map(mapApiOrder));
-    setUsers(customerRes.items.map(mapApiCustomer));
-    if (couponRes.items.length) setCoupons(couponRes.items.map(mapApiCoupon));
-    if (activityRes.items.length) setActivityLogs(activityRes.items.map(mapApiActivity));
-    setAdminBackendConnected(true);
+      setProducts(productRes.items.map(mapApiProduct));
+      setOrders(orderRes.items.map(mapApiOrder));
+      setUsers(customerRes.items.map(mapApiCustomer));
+      if (couponRes.items.length) setCoupons(couponRes.items.map(mapApiCoupon));
+      if (activityRes.items.length) setActivityLogs(activityRes.items.map(mapApiActivity));
+      setAdminBackendConnected(true);
+    } catch (err) {
+      setAdminBackendConnected(false);
+      throw err;
+    }
   };
 
   // LocalStorage synchronizers
