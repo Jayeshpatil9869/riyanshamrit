@@ -9,7 +9,9 @@ import {
   Mail,
   Sparkles,
   Shield,
-  CheckCircle2
+  CheckCircle2,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
@@ -26,6 +28,7 @@ export const LoginPage: React.FC = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,12 +231,25 @@ export const LoginPage: React.FC = () => {
               <div className="relative">
                 <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
+                  className="w-full pl-10 pr-11 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/40 hover:text-[#1a1c18] transition-colors p-1 cursor-pointer focus:outline-none"
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -278,6 +294,7 @@ export const SignupPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
@@ -347,13 +364,26 @@ export const SignupPage: React.FC = () => {
               <div className="relative">
                 <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
+                  className="w-full pl-10 pr-11 py-2.5 bg-[#f8f8f5] focus:bg-white border border-[rgba(26,28,24,0.12)] focus:border-[#3c4433] rounded-xl text-xs text-[#1a1c18] focus:outline-none transition-all"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/40 hover:text-[#1a1c18] transition-colors p-1 cursor-pointer focus:outline-none"
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 

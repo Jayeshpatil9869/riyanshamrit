@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useRouter } from "../../context/RouterContext";
 import { useAdminAuth } from "../../context/AdminAuthContext";
-import { Leaf, Lock, UserRound, ArrowRight, ShieldCheck } from "lucide-react";
+import { Leaf, Lock, UserRound, ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react";
 
 export const AdminLoginPage: React.FC = () => {
   const { login, isAuthenticated } = useAdminAuth();
   const { navigate } = useRouter();
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -97,14 +98,27 @@ export const AdminLoginPage: React.FC = () => {
             <div className="relative">
               <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/35" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#f5f4ef] border border-[rgba(30,31,28,0.1)] text-sm focus:outline-none focus:border-[#3c4433]"
+                className="w-full pl-10 pr-11 py-3 rounded-2xl bg-[#f5f4ef] border border-[rgba(30,31,28,0.1)] text-sm focus:outline-none focus:border-[#3c4433]"
                 placeholder="••••••••"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#1a1c18]/40 hover:text-[#1a1c18] transition-colors p-1 cursor-pointer focus:outline-none"
+                title={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
             </div>
           </div>
 
