@@ -290,11 +290,11 @@ export const Navbar: React.FC = () => {
               <div className="flex flex-col divide-y divide-[rgba(26,28,24,0.06)]">
                 {[
                   { label: 'Home', path: '/' },
-                  { label: 'Shop All Formulations', path: '/store' },
+                  { label: 'Shop All Products', path: '/store' },
                   { label: 'About Riyansh Amrit', path: '/about' },
                   { label: 'Contact & Support', path: '/contact' },
                   { label: 'Saved Wishlist', path: '/wishlist' },
-                  { label: 'Patron Profile & Orders', path: user ? '/account/profile' : '/login' },
+                  { label: 'My Profile & Orders', path: user ? '/account/profile' : '/login' },
                   ...(user?.role === 'admin' ? [{ label: '⚡ Admin Management Suite', path: '/admin' }] : [])
                 ].map((item) => (
                   <Link

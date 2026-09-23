@@ -28,7 +28,6 @@ interface AdminLayoutProps {
     | 'products'
     | 'orders'
     | 'customers'
-    | 'coupons'
     | 'analytics'
     | 'settings'
     | 'activity';
@@ -39,7 +38,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
   const {
     orders,
     products,
-    coupons,
     activityLogs,
     syncAdminFromBackend,
     adminBackendConnected,
@@ -80,7 +78,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/admin', badge: null as string | null },
     {
       id: 'products',
-      label: 'Formulations Catalog',
+      label: 'Products Catalog',
       icon: Package,
       path: '/admin/products',
       badge: lowStockCount > 0 ? `${lowStockCount} alert` : null,
@@ -94,7 +92,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
       badge: pendingOrdersCount > 0 ? `${pendingOrdersCount} pending` : null,
       badgeColor: 'bg-[#3c4433] text-[#dac5a7]',
     },
-    { id: 'customers', label: 'Patrons & Users', icon: Users, path: '/admin/customers', badge: null },
+    { id: 'customers', label: 'Customers', icon: Users, path: '/admin/customers', badge: null },
     { id: 'analytics', label: 'Revenue Analytics', icon: BarChart3, path: '/admin/analytics', badge: null },
     { id: 'activity', label: 'Audit & Activity Log', icon: History, path: '/admin/activity', badge: null },
   ];
@@ -105,20 +103,20 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f4ef] text-[#1a1c18] flex flex-col lg:flex-row antialiased font-sans">
+    <div className="admin-scope min-h-screen bg-[#f5f4ef] text-[#1a1c18] flex flex-col lg:flex-row antialiased">
       <aside className="hidden lg:flex w-72 bg-[#1e1f1c] text-[#eae6df] flex-col justify-between shrink-0 border-r border-white/10 z-30 sticky top-0 h-screen overflow-y-auto">
         <div>
           <div className="p-6 border-b border-white/10">
             <Link to="/admin" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl bg-[#3c4433] border border-[#dac5a7]/30 flex items-center justify-center text-[#dac5a7] font-serif font-bold text-lg shadow-inner group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 rounded-2xl bg-[#3c4433] border border-[#dac5a7]/30 flex items-center justify-center text-[#dac5a7] font-bold text-base tracking-wider shadow-inner group-hover:scale-105 transition-transform">
                 RA
               </div>
               <div>
-                <span className="font-serif text-lg tracking-wide uppercase font-semibold text-white block">
+                <span className="text-base tracking-wide uppercase font-bold text-white block">
                   Riyansh Amrit
                 </span>
                 <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#dac5a7] block">
-                  Apothecary Portal
+                  Admin Portal
                 </span>
               </div>
             </Link>
@@ -196,7 +194,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab })
             </button>
             <div className="flex items-center gap-2 text-xs">
               <span className="font-mono text-[#757d5c] uppercase text-[11px] font-semibold hidden sm:inline">
-                Apothecary Administration
+                Store Administration
               </span>
               <ChevronRight className="w-3.5 h-3.5 text-[#1a1c18]/30 hidden sm:inline" />
               <span className="font-medium text-[#1a1c18] capitalize">{activeTab.replace('-', ' ')}</span>

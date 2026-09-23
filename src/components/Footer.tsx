@@ -163,13 +163,13 @@ export const Footer: React.FC = () => {
                 {/* Account Sub-Section */}
                 <div className="flex flex-col items-center lg:items-start gap-2">
                   <h3 className="font-serif italic text-white/95 text-lg sm:text-base font-light">
-                    Account &amp; Dispensary
+                    Account &amp; Orders
                   </h3>
                   <nav className="flex flex-col items-center lg:items-start gap-2 sm:gap-1.5">
-                    <RollLink href="/account/profile" label="Patron Profile" />
+                    <RollLink href="/account/profile" label="My Profile" />
                     <RollLink href="/account/orders" label="Order Tracking" />
-                    <RollLink href="/wishlist" label="Saved Formulations" />
-                    <RollLink href="/admin" label="Admin Management Portal" />
+                    <RollLink href="/wishlist" label="Saved Wishlist" />
+                    <RollLink href="/admin" label="Admin Portal" />
                   </nav>
                 </div>
               </div>

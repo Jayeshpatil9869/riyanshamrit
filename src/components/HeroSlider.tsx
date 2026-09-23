@@ -201,7 +201,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ onOpenQuiz }) => {
                   <span className="font-mono text-xs font-bold text-[#1a1c18] ml-1.5">4.9 / 5.0</span>
                 </div>
                 <span className="text-[11px] text-[#1a1c18]/60 font-body">
-                  From 2,400+ Verified Vedic Patrons & Physicians
+                  From 2,400+ Verified Customers &amp; Practitioners
                 </span>
               </div>
             </div>

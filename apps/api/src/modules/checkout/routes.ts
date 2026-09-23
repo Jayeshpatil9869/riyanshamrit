@@ -2,7 +2,6 @@ import { and, eq, sql } from "drizzle-orm";
 import {
   activityLogs,
   cartItems,
-  coupons,
   idempotencyKeys,
   inventoryMovements,
   orderItems,
@@ -56,25 +55,10 @@ export async function registerCheckoutRoutes(app: AppInstance, ctx: RouteCtx) {
       }
     }
 
-    let total = lines.reduce(
+    const total = lines.reduce(
       (sum, line) => sum + Number(line.price) * line.quantity,
       0,
     );
-
-    if (body.couponCode) {
-      const [coupon] = await ctx.db
-        .select()
-        .from(coupons)
-        .where(and(eq(coupons.code, body.couponCode), eq(coupons.isActive, true)))
-        .limit(1);
-      if (coupon) {
-        if (coupon.discountType === "percent") {
-          total = total * (1 - Number(coupon.discountValue) / 100);
-        } else {
-          total = Math.max(0, total - Number(coupon.discountValue));
-        }
-      }
-    }
 
     const result = await ctx.db.transaction(async (tx) => {
       const [order] = await tx

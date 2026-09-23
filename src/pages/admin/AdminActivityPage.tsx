@@ -21,13 +21,11 @@ export const AdminActivityPage: React.FC = () => {
       case 'products':
         return <Package className="w-4 h-4 text-[#757d5c]" />;
       case 'orders':
-        return <ShoppingBag className="w-4 h-4 text-blue-600" />;
+        return <ShoppingBag className="w-4 h-4 text-[#3c4433]" />;
       case 'customers':
-        return <Users className="w-4 h-4 text-purple-600" />;
-      case 'coupons':
-        return <Tag className="w-4 h-4 text-emerald-600" />;
+        return <Users className="w-4 h-4 text-[#8a6d3b]" />;
       case 'settings':
-        return <Settings className="w-4 h-4 text-amber-600" />;
+        return <Settings className="w-4 h-4 text-[#c5ad8d]" />;
       default:
         return <Shield className="w-4 h-4 text-[#1a1c18]" />;
     }
@@ -40,11 +38,11 @@ export const AdminActivityPage: React.FC = () => {
         <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block mb-1">
           SECURITY &amp; COMPLIANCE
         </span>
-        <h1 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
+        <h1 className="font-bold text-2xl sm:text-3xl text-[#1a1c18] tracking-tight">
           Audit Trail &amp; Activity Log
         </h1>
-        <p className="text-xs text-[#1a1c18]/60 mt-1 font-body">
-          Chronological timestamped records of all store changes, catalog modifications, dispatches, and coupon issuances.
+        <p className="text-xs text-[#1a1c18]/60 mt-1">
+          Chronological timestamped records of all store changes, catalog modifications, and dispatches.
         </p>
       </div>
 

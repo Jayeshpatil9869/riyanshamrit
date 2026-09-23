@@ -85,7 +85,7 @@ export const AdminOrdersPage: React.FC = () => {
           <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block mb-1">
             FULFILLMENT PIPELINE
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1a1c18] tracking-tight">
             Orders &amp; Dispatch Center ({orders.length})
           </h1>
           <p className="text-xs text-[#1a1c18]/60 mt-1 font-body">
@@ -112,7 +112,7 @@ export const AdminOrdersPage: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by Order ID, Patron Name, Email, or AWB tracking..."
+            placeholder="Search by Order ID, Customer Name, Email, or AWB tracking..."
             className="w-full pl-9 pr-4 py-2 bg-[#f5f4ef] border border-[rgba(26,28,24,0.08)] rounded-2xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
           />
         </div>
@@ -148,7 +148,7 @@ export const AdminOrdersPage: React.FC = () => {
             <thead>
               <tr className="bg-[#fbfbf9] border-b border-[rgba(26,28,24,0.08)] text-[10px] font-mono uppercase text-[#1a1c18]/50">
                 <th className="py-3.5 px-6 font-semibold">Order ID &amp; Date</th>
-                <th className="py-3.5 px-4 font-semibold">Patron &amp; Destination</th>
+                <th className="py-3.5 px-4 font-semibold">Customer &amp; Destination</th>
                 <th className="py-3.5 px-4 font-semibold">Items</th>
                 <th className="py-3.5 px-4 font-semibold">Financials</th>
                 <th className="py-3.5 px-4 font-semibold">Carrier / AWB</th>
@@ -261,7 +261,7 @@ export const AdminOrdersPage: React.FC = () => {
                 <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block">
                   COURIER DISPATCH
                 </span>
-                <h3 className="font-serif text-xl text-[#1a1c18]">
+                <h3 className="text-xl font-bold text-[#1a1c18] tracking-tight">
                   Assign AWB: {editingTrackingOrder.id}
                 </h3>
               </div>
@@ -339,14 +339,14 @@ export const AdminOrdersPage: React.FC = () => {
 
       {/* ================= TAX INVOICE MODAL ================= */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 space-y-6 shadow-2xl border">
+        <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overscroll-contain">
+          <div data-lenis-prevent className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-8 space-y-6 shadow-2xl border overscroll-contain">
             <div className="flex items-start justify-between border-b pb-4">
               <div>
                 <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block">
                   OFFICIAL TAX INVOICE
                 </span>
-                <h3 className="font-serif text-2xl text-[#1a1c18]">Invoice #{selectedOrder.id}-INV</h3>
+                <h3 className="text-2xl font-bold text-[#1a1c18] tracking-tight">Invoice #{selectedOrder.id}-INV</h3>
                 <p className="text-xs font-mono text-[#1a1c18]/50 mt-0.5">Riyansh Multitrade Pvt. Ltd. (Sangamner)</p>
               </div>
               <button

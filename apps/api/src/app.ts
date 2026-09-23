@@ -25,7 +25,6 @@ import { registerPaymentRoutes } from "./modules/payments/routes.js";
 import { registerAdminRoutes } from "./modules/admin/routes.js";
 import { registerSeoRoutes } from "./modules/seo/routes.js";
 import { registerReviewRoutes } from "./modules/reviews/routes.js";
-import { registerCouponRoutes } from "./modules/coupons/routes.js";
 import { registerMeRoutes } from "./modules/me/routes.js";
 
 export type AppContext = Awaited<ReturnType<typeof buildApp>> extends {
@@ -181,7 +180,6 @@ export async function buildApp() {
   await registerAdminRoutes(app, ctx);
   await registerSeoRoutes(app, ctx);
   await registerReviewRoutes(app, ctx);
-  await registerCouponRoutes(app, ctx);
 
   return { app, ctx };
 }

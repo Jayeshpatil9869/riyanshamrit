@@ -126,19 +126,6 @@ export interface User {
   addresses?: any[];
 }
 
-export interface Coupon {
-  id: string;
-  code: string;
-  discountType: 'percentage' | 'fixed';
-  value: number; // percentage (e.g. 10 for 10%) or fixed INR (e.g. 150)
-  minSpend: number;
-  usageCount: number;
-  maxUses?: number;
-  expiryDate?: string;
-  isActive: boolean;
-  description: string;
-}
-
 export interface StoreSettings {
   announcementText: string;
   isAnnouncementActive: boolean;
@@ -156,7 +143,7 @@ export interface AdminActivityLog {
   timestamp: string;
   adminName: string;
   action: string;
-  category: 'products' | 'orders' | 'customers' | 'coupons' | 'settings' | 'auth';
+  category: 'products' | 'orders' | 'customers' | 'settings' | 'auth';
   details: string;
 }
 

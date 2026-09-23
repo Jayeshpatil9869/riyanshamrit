@@ -32,7 +32,6 @@ import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminProductsPage } from './pages/admin/AdminProductsPage';
 import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
 import { AdminCustomersPage } from './pages/admin/AdminCustomersPage';
-import { AdminCouponsPage } from './pages/admin/AdminCouponsPage';
 import { AdminAnalyticsPage } from './pages/admin/AdminAnalyticsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 import { AdminActivityPage } from './pages/admin/AdminActivityPage';
@@ -127,12 +126,6 @@ const AppContent: React.FC = () => {
         return (
           <AdminGate>
             <AdminCustomersPage />
-          </AdminGate>
-        );
-      case '/admin/coupons':
-        return (
-          <AdminGate>
-            <AdminCouponsPage />
           </AdminGate>
         );
       case '/admin/analytics':

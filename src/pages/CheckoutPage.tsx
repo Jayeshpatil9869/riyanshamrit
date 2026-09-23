@@ -114,7 +114,7 @@ export const CheckoutPage: React.FC = () => {
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    placeholder="patron@example.com"
+                    placeholder="customer@example.com"
                     className="w-full px-4 py-2.5 bg-[#f2f2ef] border border-[rgba(26,28,24,0.12)] rounded-xl text-xs sm:text-sm text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
                     required
                   />
@@ -269,7 +269,7 @@ export const CheckoutPage: React.FC = () => {
               {orderNote && (
                 <div className="p-3 bg-[#f2f2ef] rounded-xl text-xs text-[#1a1c18]/70">
                   <strong className="block text-[10px] font-mono uppercase text-[#757d5c]">
-                    Patron Consultation Note:
+                    Order Note:
                   </strong>
                   <p className="italic text-[11px] mt-0.5">{orderNote}</p>
                 </div>
@@ -284,7 +284,7 @@ export const CheckoutPage: React.FC = () => {
 
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-[#757d5c] font-medium">
-                    <span>Ayurvedic Patron Discount</span>
+                    <span>Discount</span>
                     <span className="font-mono">-{formatPrice(discountAmount)}</span>
                   </div>
                 )}

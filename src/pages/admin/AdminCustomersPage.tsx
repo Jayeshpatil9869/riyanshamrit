@@ -86,13 +86,13 @@ export const AdminCustomersPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[rgba(26,28,24,0.08)]">
         <div>
           <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block mb-1">
-            PATRON REGISTRY
+            CUSTOMER DIRECTORY
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
-            Patrons &amp; Users Directory ({users.length})
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1a1c18] tracking-tight">
+            Customers Directory ({users.length})
           </h1>
           <p className="text-xs text-[#1a1c18]/60 mt-1 font-body">
-            Manage registered patrons, practitioner accounts, roles (Super Admin / Patron), and VIP concessions.
+            Manage registered customers, practitioner accounts, roles (Super Admin / Customer), and VIP tiers.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export const AdminCustomersPage: React.FC = () => {
           className="px-5 py-2.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium flex items-center gap-2 shadow-xs transition-colors cursor-pointer self-start sm:self-auto"
         >
           <UserPlus className="w-4 h-4 text-[#dac5a7]" />
-          <span>Register New Patron</span>
+          <span>Add Customer</span>
         </button>
       </div>
 
@@ -113,7 +113,7 @@ export const AdminCustomersPage: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search patrons by name, email, or contact number..."
+            placeholder="Search customers by name, email, or contact number..."
             className="w-full pl-9 pr-4 py-2 bg-[#f5f4ef] border border-[rgba(26,28,24,0.08)] rounded-2xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
           />
         </div>
@@ -125,7 +125,7 @@ export const AdminCustomersPage: React.FC = () => {
               roleFilter === 'all' ? 'bg-[#3c4433] text-white' : 'bg-[#f2f2ef] text-[#1a1c18]/70 hover:bg-[#e8e8e1]'
             }`}
           >
-            All Patrons
+            All Customers
           </button>
           <button
             onClick={() => setRoleFilter('admin')}
@@ -141,7 +141,7 @@ export const AdminCustomersPage: React.FC = () => {
               roleFilter === 'customer' ? 'bg-[#3c4433] text-white' : 'bg-[#f2f2ef] text-[#1a1c18]/70 hover:bg-[#e8e8e1]'
             }`}
           >
-            Store Patrons
+            Store Customers
           </button>
         </div>
       </div>
@@ -152,7 +152,7 @@ export const AdminCustomersPage: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="bg-[#fbfbf9] border-b border-[rgba(26,28,24,0.08)] text-[10px] font-mono uppercase text-[#1a1c18]/50">
-                <th className="py-3.5 px-6 font-semibold">Patron Details</th>
+                <th className="py-3.5 px-6 font-semibold">Customer Details</th>
                 <th className="py-3.5 px-4 font-semibold">Orders &amp; Spend</th>
                 <th className="py-3.5 px-4 font-semibold">Status</th>
                 <th className="py-3.5 px-4 font-semibold">Registered</th>
@@ -162,10 +162,10 @@ export const AdminCustomersPage: React.FC = () => {
             <tbody className="divide-y divide-[rgba(26,28,24,0.04)]">
               {filteredUsers.map((user) => (
                 <tr key={user.id || user.email} className="hover:bg-[#fbfbf9] transition-colors">
-                  {/* Patron Info */}
+                  {/* Customer Info */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#3c4433] text-[#dac5a7] flex items-center justify-center font-serif text-sm font-bold shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-[#3c4433] text-[#dac5a7] flex items-center justify-center font-bold text-sm shrink-0">
                         {user.name.charAt(0)}
                       </div>
                       <div>
@@ -209,7 +209,7 @@ export const AdminCustomersPage: React.FC = () => {
                           : 'bg-emerald-50 text-emerald-800'
                       }`}
                     >
-                      {user.status === 'vip' ? '★ VIP Patron' : (user.status || 'Active')}
+                      {user.status === 'vip' ? '★ VIP Customer' : (user.status || 'Active')}
                     </button>
                   </td>
 
@@ -246,16 +246,16 @@ export const AdminCustomersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ================= REGISTER NEW PATRON MODAL ================= */}
+      {/* ================= REGISTER NEW CUSTOMER MODAL ================= */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl border">
+        <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overscroll-contain">
+          <div data-lenis-prevent className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl border overscroll-contain">
             <div className="flex items-start justify-between border-b pb-3">
               <div>
                 <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block">
-                  PATRON ONBOARDING
+                  CUSTOMER ONBOARDING
                 </span>
-                <h3 className="font-serif text-xl text-[#1a1c18]">Register New Account</h3>
+                <h3 className="text-xl font-bold text-[#1a1c18] tracking-tight">Register New Account</h3>
               </div>
               <button onClick={() => setIsAddModalOpen(false)} className="p-1 text-[#1a1c18]/50">
                 <X className="w-5 h-5" />
@@ -272,7 +272,7 @@ export const AdminCustomersPage: React.FC = () => {
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   required
-                  placeholder="Vaidya Jayant Joshi"
+                  placeholder="Jayant Joshi"
                   className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border rounded-xl"
                 />
               </div>
@@ -286,7 +286,7 @@ export const AdminCustomersPage: React.FC = () => {
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                   required
-                  placeholder="patron@domain.com"
+                  placeholder="customer@domain.com"
                   className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border rounded-xl"
                 />
               </div>
@@ -314,7 +314,7 @@ export const AdminCustomersPage: React.FC = () => {
                     onChange={(e) => setNewRole(e.target.value as any)}
                     className="w-full px-3 py-2 bg-[#f5f4ef] border rounded-xl font-mono text-[11px]"
                   >
-                    <option value="customer">Patron (Customer)</option>
+                    <option value="customer">Customer</option>
                     <option value="admin">Administrator</option>
                   </select>
                 </div>
@@ -348,7 +348,7 @@ export const AdminCustomersPage: React.FC = () => {
                   type="submit"
                   className="flex-1 py-2.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium shadow-xs"
                 >
-                  Create Patron
+                  Create Customer
                 </button>
               </div>
             </form>
@@ -358,15 +358,15 @@ export const AdminCustomersPage: React.FC = () => {
 
       {/* ================= USER DETAILS / ADDRESS DRAWER ================= */}
       {selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl border">
+        <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overscroll-contain">
+          <div data-lenis-prevent className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl border overscroll-contain">
             <div className="flex items-start justify-between border-b pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-[#3c4433] text-[#dac5a7] flex items-center justify-center font-serif text-lg font-bold">
+                <div className="w-12 h-12 rounded-full bg-[#3c4433] text-[#dac5a7] flex items-center justify-center text-base font-bold">
                   {selectedUser.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl text-[#1a1c18]">{selectedUser.name}</h3>
+                  <h3 className="text-xl font-bold text-[#1a1c18] tracking-tight">{selectedUser.name}</h3>
                   <span className="text-xs font-mono text-[#1a1c18]/60">{selectedUser.email}</span>
                 </div>
               </div>
@@ -388,7 +388,7 @@ export const AdminCustomersPage: React.FC = () => {
               </div>
 
               <div>
-                <h4 className="font-serif text-base text-[#1a1c18] mb-2">Saved Delivery Addresses</h4>
+                <h4 className="text-sm font-bold text-[#1a1c18] mb-2 tracking-tight">Saved Delivery Addresses</h4>
                 {(!selectedUser.savedAddresses || selectedUser.savedAddresses.length === 0) ? (
                   <p className="text-xs text-[#1a1c18]/50 italic">No saved delivery addresses on file.</p>
                 ) : (

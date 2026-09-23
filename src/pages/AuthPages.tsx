@@ -60,7 +60,7 @@ export const LoginPage: React.FC = () => {
           </div>
           <div className="space-y-1">
             <span className="text-[10px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-bold block">
-              {user.role === 'admin' ? 'ADMINISTRATOR AUTHENTICATED' : 'PATRON PROFILE ACTIVE'}
+              {user.role === 'admin' ? 'ADMINISTRATOR AUTHENTICATED' : 'ACCOUNT ACTIVE'}
             </span>
             <h1 className="font-serif text-3xl text-[#1a1c18]">{user.name}</h1>
             <p className="text-xs text-[#1a1c18]/60 font-mono">{user.email}</p>
@@ -81,7 +81,7 @@ export const LoginPage: React.FC = () => {
               onClick={() => navigate('/account/profile')}
               className="w-full py-3.5 px-4 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full font-medium transition-all shadow-xs cursor-pointer"
             >
-              View Patron Profile &amp; Addresses
+              View Profile &amp; Addresses
             </button>
             <button
               onClick={() => navigate('/account/orders')}
@@ -96,7 +96,7 @@ export const LoginPage: React.FC = () => {
               }}
               className="w-full py-2 text-[#1a1c18]/50 hover:text-red-700 underline text-[11px] cursor-pointer"
             >
-              Sign Out of Dispensary
+              Sign Out
             </button>
           </div>
         </div>
@@ -110,13 +110,13 @@ export const LoginPage: React.FC = () => {
         {/* Header Heading */}
         <div className="text-center space-y-1.5">
           <span className="text-[10px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-bold block">
-            PATRON &amp; APOTHECARY ACCESS
+            ACCOUNT ACCESS
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-[#1a1c18] font-normal tracking-tight">
-            Sign In to Riyansh
+            Sign In to Riyansh Amrit
           </h1>
           <p className="text-xs text-[#1a1c18]/60 font-body max-w-sm mx-auto">
-            Access saved regimens, order tracking, and apothecary dispensary controls.
+            Access saved orders, tracking, and account settings.
           </p>
         </div>
 
@@ -146,7 +146,7 @@ export const LoginPage: React.FC = () => {
                 className="py-2.5 px-3 bg-white hover:bg-[#f2f2ef] text-[#1a1c18] border border-[rgba(26,28,24,0.14)] rounded-xl text-[11px] font-medium flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
               >
                 <User className="w-3.5 h-3.5 text-[#757d5c]" />
-                <span>Patron Login</span>
+                <span>Customer Login</span>
               </button>
             </div>
           </div>
@@ -241,7 +241,7 @@ export const LoginPage: React.FC = () => {
               type="submit"
               className="w-full py-3.5 bg-[#1a1c18] hover:bg-[#3c4433] active:bg-[#2b3323] text-white rounded-full text-xs font-semibold tracking-wide uppercase transition-all shadow-md hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer mt-2"
             >
-              <span>Sign In to Dispensary</span>
+              <span>Sign In</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#dac5a7]" />
             </button>
           </form>
@@ -250,7 +250,7 @@ export const LoginPage: React.FC = () => {
           <div className="pt-3 border-t border-[rgba(26,28,24,0.06)] text-center text-xs text-[#1a1c18]/60">
             <span>New to Riyansh Amrit? </span>
             <Link to="/signup" className="text-[#3c4433] font-semibold hover:underline">
-              Create Patron Account
+              Create Account
             </Link>
           </div>
         </div>
@@ -294,13 +294,13 @@ export const SignupPage: React.FC = () => {
       <div className="w-full max-w-[460px] mx-auto space-y-6">
         <div className="text-center space-y-1.5">
           <span className="text-[10px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-bold block">
-            BECOME AN AYURVEDIC PATRON
+            CREATE ACCOUNT
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-[#1a1c18] font-normal tracking-tight">
             Create an Account
           </h1>
           <p className="text-xs text-[#1a1c18]/60 font-body max-w-sm mx-auto">
-            Receive complimentary Ayurvedic dosage consultations, customized regimens, and patron privileges.
+            Create an account to track orders and save your delivery details.
           </p>
         </div>
 

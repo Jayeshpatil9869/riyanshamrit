@@ -160,7 +160,7 @@ export const AboutPage: React.FC = () => {
           <div className="bg-white rounded-2xl p-8 flex flex-col items-center text-center gap-3 shadow-[0_4px_24px_rgba(26,28,24,0.04)] border border-[rgba(26,28,24,0.06)] hover:-translate-y-1 transition-transform duration-300">
             <AnimatedCounter end={97} suffix="%" />
             <h3 className="text-base font-semibold text-[#1a1c18]">Customer Satisfaction</h3>
-            <p className="text-[13.5px] text-[#1a1c18]/70 leading-relaxed font-normal">Trusted by happy, glowing patrons worldwide.</p>
+            <p className="text-[13.5px] text-[#1a1c18]/70 leading-relaxed font-normal">Trusted by happy, glowing customers worldwide.</p>
           </div>
 
           {/* Stat Card 3 */}

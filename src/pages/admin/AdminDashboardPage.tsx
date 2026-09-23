@@ -4,7 +4,7 @@ import { useCommerce } from '../../context/CommerceContext';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 import {
   TrendingUp,
-  DollarSign,
+  IndianRupee,
   ShoppingBag,
   Users,
   Package,
@@ -26,7 +26,6 @@ export const AdminDashboardPage: React.FC = () => {
     products,
     orders,
     users,
-    coupons,
     formatPrice,
     updateOrderStatus,
     updateProduct,
@@ -62,20 +61,26 @@ export const AdminDashboardPage: React.FC = () => {
   return (
     <AdminLayout activeTab="dashboard">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#2b3323] via-[#3c4433] to-[#1e1f1c] rounded-3xl p-6 sm:p-10 text-white shadow-xl border border-white/10">
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#2b3323] via-[#3c4433] to-[#1e1f1c] rounded-3xl p-6 sm:p-10 shadow-xl border border-white/10">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full bg-[#dac5a7]/20 text-[#dac5a7] text-[10px] font-mono tracking-widest uppercase font-semibold">
-                APOTHECARY OVERVIEW
+                STORE OVERVIEW
               </span>
-              <span className="text-xs text-white/50 font-mono">• Live Telemetry</span>
+              <span className="text-xs text-white/70 font-mono">• Live Telemetry</span>
             </div>
-            <h1 className="font-serif text-2xl sm:text-4xl text-white font-normal">
-              Riyansh Botanical Dispensary
+            <h1
+              className="text-2xl sm:text-4xl font-bold tracking-tight !text-white"
+              style={{ color: '#ffffff' }}
+            >
+              Riyansh Amrit Overview
             </h1>
-            <p className="text-xs sm:text-sm text-[#eae6df]/75 max-w-xl leading-relaxed">
-              Real-time monitoring of formulation orders, customer shipments, botanical inventory, and revenue from Sangamner processing hub.
+            <p
+              className="text-xs sm:text-sm max-w-xl leading-relaxed !text-white/85"
+              style={{ color: 'rgba(255, 255, 255, 0.85)' }}
+            >
+              Real-time monitoring of customer orders, shipments, product inventory, and revenue from Sangamner processing hub.
             </p>
           </div>
 
@@ -85,7 +90,7 @@ export const AdminDashboardPage: React.FC = () => {
               className="px-5 py-3 bg-[#dac5a7] hover:bg-[#c9b496] text-[#1a1c18] font-medium text-xs rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-md cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Formulation</span>
+              <span>Add Product</span>
             </button>
             <button
               onClick={() => navigate('/admin/orders')}
@@ -109,15 +114,15 @@ export const AdminDashboardPage: React.FC = () => {
             <span className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/60 font-semibold">
               Total Gross Revenue
             </span>
-            <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700">
-              <DollarSign className="w-4 h-4" />
+            <div className="p-2.5 rounded-2xl bg-[#3c4433]/10 text-[#3c4433] border border-[#3c4433]/15">
+              <IndianRupee className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <h3 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#1a1c18] tracking-tight">
               {formatPrice(totalRevenue || 112500)}
             </h3>
-            <span className="flex items-center text-emerald-600 text-xs font-mono font-semibold">
+            <span className="flex items-center gap-0.5 text-[#3c4433] bg-[#757d5c]/15 px-2 py-0.5 rounded-full text-xs font-mono font-semibold">
               <ArrowUpRight className="w-3.5 h-3.5" />
               +23.4%
             </span>
@@ -133,15 +138,15 @@ export const AdminDashboardPage: React.FC = () => {
             <span className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/60 font-semibold">
               Total Store Orders
             </span>
-            <div className="p-2 rounded-xl bg-blue-50 text-blue-700">
+            <div className="p-2.5 rounded-2xl bg-[#757d5c]/15 text-[#3c4433] border border-[#757d5c]/25">
               <ShoppingBag className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <h3 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#1a1c18] tracking-tight">
               {totalOrdersCount}
             </h3>
-            <span className="flex items-center text-blue-600 text-xs font-mono font-semibold">
+            <span className="flex items-center gap-0.5 text-[#3c4433] bg-[#757d5c]/15 px-2 py-0.5 rounded-full text-xs font-mono font-semibold">
               <ArrowUpRight className="w-3.5 h-3.5" />
               +14.8%
             </span>
@@ -157,15 +162,15 @@ export const AdminDashboardPage: React.FC = () => {
             <span className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/60 font-semibold">
               Average Basket (AOV)
             </span>
-            <div className="p-2 rounded-xl bg-[#dac5a7]/30 text-[#3c4433]">
+            <div className="p-2.5 rounded-2xl bg-[#dac5a7]/35 text-[#3c4433] border border-[#dac5a7]/50">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <h3 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#1a1c18] tracking-tight">
               {formatPrice(averageOrderValue || 840)}
             </h3>
-            <span className="flex items-center text-emerald-600 text-xs font-mono font-semibold">
+            <span className="flex items-center gap-0.5 text-[#3c4433] bg-[#757d5c]/15 px-2 py-0.5 rounded-full text-xs font-mono font-semibold">
               <ArrowUpRight className="w-3.5 h-3.5" />
               +8.2%
             </span>
@@ -174,7 +179,6 @@ export const AdminDashboardPage: React.FC = () => {
             Target threshold: ₹999 for free shipping
           </p>
         </div>
-
       </div>
 
 
@@ -186,8 +190,8 @@ export const AdminDashboardPage: React.FC = () => {
             <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block">
               LIVE DISPATCH CENTER
             </span>
-            <h2 className="font-serif text-xl sm:text-2xl text-[#1a1c18]">
-              Recent Patron Orders
+            <h2 className="text-xl sm:text-2xl font-bold text-[#1a1c18] tracking-tight">
+              Recent Customer Orders
             </h2>
           </div>
 
@@ -206,7 +210,7 @@ export const AdminDashboardPage: React.FC = () => {
             <thead>
               <tr className="border-b border-[rgba(26,28,24,0.08)] text-[10px] font-mono uppercase text-[#1a1c18]/50">
                 <th className="pb-3 font-semibold">Order ID</th>
-                <th className="pb-3 font-semibold">Patron Details</th>
+                <th className="pb-3 font-semibold">Customer Details</th>
                 <th className="pb-3 font-semibold">Items</th>
                 <th className="pb-3 font-semibold">Amount</th>
                 <th className="pb-3 font-semibold">Status</th>

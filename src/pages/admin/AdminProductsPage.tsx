@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useCommerce } from '../../context/CommerceContext';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 import { Product, Ingredient } from '../../types';
@@ -14,12 +14,25 @@ import {
   Star,
   Sparkles,
   AlertCircle,
-  RefreshCw,
   X,
   Image as ImageIcon,
   Layers,
-  Leaf
+  Leaf,
+  UploadCloud,
+  FileImage,
+  Link2,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
+
+const slugify = (text: string): string => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
 
 const INITIAL_EMPTY_PRODUCT: Omit<Product, 'id'> = {
   slug: '',
@@ -65,7 +78,6 @@ export const AdminProductsPage: React.FC = () => {
     addProduct,
     updateProduct,
     deleteProduct,
-    resetProductsToDefault,
     formatPrice,
     addToast
   } = useCommerce();
@@ -78,6 +90,10 @@ export const AdminProductsPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState<Omit<Product, 'id'>>(INITIAL_EMPTY_PRODUCT);
+  const [isSlugCustom, setIsSlugCustom] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // New Benefit / Ingredient temporary inputs
   const [tempBenefit, setTempBenefit] = useState('');
@@ -108,11 +124,15 @@ export const AdminProductsPage: React.FC = () => {
   const handleOpenCreateModal = () => {
     setEditingProduct(null);
     setFormData(INITIAL_EMPTY_PRODUCT);
+    setIsSlugCustom(false);
+    setShowAdvanced(false);
     setIsModalOpen(true);
   };
 
   const handleOpenEditModal = (product: Product) => {
     setEditingProduct(product);
+    setIsSlugCustom(true);
+    setShowAdvanced(false);
     setFormData({
       slug: product.slug,
       name: product.name,
@@ -143,19 +163,83 @@ export const AdminProductsPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const handleNameChange = (newName: string) => {
+    setFormData((prev) => {
+      const generatedSlug = slugify(newName);
+      const shouldAutoSlug = !isSlugCustom || !prev.slug || prev.slug === slugify(prev.name);
+      return {
+        ...prev,
+        name: newName,
+        slug: shouldAutoSlug ? generatedSlug : prev.slug
+      };
+    });
+  };
+
+  const handleSlugChange = (newSlug: string) => {
+    setIsSlugCustom(true);
+    setFormData((prev) => ({ ...prev, slug: slugify(newSlug) }));
+  };
+
+  const handleFileUpload = (file: File) => {
+    if (!file) return;
+    if (!file.type.match(/^image\/(png|jpeg|jpg|webp)$/i)) {
+      addToast('Please upload a valid image (PNG, JPG, WEBP)', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      if (result) {
+        setFormData((prev) => ({
+          ...prev,
+          image: result,
+          gallery: [result, ...(prev.gallery?.filter((g) => g !== prev.image) || [])]
+        }));
+        addToast('Product image uploaded successfully', 'success');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || formData.price <= 0) {
-      addToast('Please enter a valid formulation name and price', 'error');
+      addToast('Please enter a valid product name and price', 'error');
       return;
     }
 
+    const payload = {
+      ...formData,
+      slug: formData.slug.trim() || slugify(formData.name) || `prod-${Date.now()}`
+    };
+
     if (editingProduct) {
-      updateProduct(editingProduct.id, formData);
+      updateProduct(editingProduct.id, payload);
       addToast(`Updated "${formData.name}" successfully`, 'success');
     } else {
-      addProduct(formData);
-      addToast(`Added "${formData.name}" to dispensary`, 'success');
+      addProduct(payload);
+      addToast(`Added "${formData.name}" to products catalog`, 'success');
     }
     setIsModalOpen(false);
   };
@@ -205,10 +289,10 @@ export const AdminProductsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[rgba(26,28,24,0.08)]">
         <div>
           <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block mb-1">
-            BOTANICAL INVENTORY
+            PRODUCT INVENTORY
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
-            Formulations Catalog ({products.length})
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1a1c18] tracking-tight">
+            Products Catalog ({products.length})
           </h1>
           <p className="text-xs text-[#1a1c18]/60 mt-1 font-body">
             Manage product listings, pricing, stock levels, botanical actives, and certifications.
@@ -217,19 +301,11 @@ export const AdminProductsPage: React.FC = () => {
 
         <div className="flex flex-wrap items-center gap-2.5">
           <button
-            onClick={resetProductsToDefault}
-            title="Reset to default formulations"
-            className="px-4 py-2.5 bg-white border border-[rgba(26,28,24,0.12)] hover:bg-[#f2f2ef] rounded-full text-xs font-medium text-[#1a1c18] flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Reset Defaults</span>
-          </button>
-          <button
             onClick={handleOpenCreateModal}
             className="px-5 py-2.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4 text-[#dac5a7]" />
-            <span>Add Formulation</span>
+            <span>Add Product</span>
           </button>
         </div>
       </div>
@@ -405,133 +481,142 @@ export const AdminProductsPage: React.FC = () => {
 
       {/* ================= EDIT / CREATE MODAL ================= */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl border border-[rgba(26,28,24,0.1)]">
-            <div className="flex items-start justify-between border-b pb-4">
+        <div
+          data-lenis-prevent
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overscroll-contain"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsModalOpen(false);
+          }}
+        >
+          <div
+            data-lenis-prevent
+            className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-[rgba(26,28,24,0.1)] overflow-hidden overscroll-contain"
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-[rgba(26,28,24,0.08)] px-6 py-5 sm:px-8 bg-white shrink-0">
               <div>
                 <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block">
-                  APOTHECARY FORMULATION EDITOR
+                  PRODUCT EDITOR
                 </span>
-                <h3 className="font-serif text-2xl text-[#1a1c18]">
-                  {editingProduct ? `Edit: ${editingProduct.name}` : 'New Botanical Formulation'}
+                <h3 className="text-2xl font-bold text-[#1a1c18] tracking-tight">
+                  {editingProduct ? 'Edit Product' : 'Add New Product'}
                 </h3>
               </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-full hover:bg-[#f2f2ef] text-[#1a1c18]/60"
+                className="p-1.5 rounded-full hover:bg-[#f2f2ef] text-[#1a1c18]/60 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveProduct} className="space-y-5">
-              {/* Row 1: Name & Tagline */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
-                    Formulation Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                    placeholder="E.g., Saffron Radiant Elixir"
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
-                    Tagline
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.tagline}
-                    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                    placeholder="E.g., 100% cold-pressed organic actives"
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
-                  />
-                </div>
+            {/* Scrollable Form Body */}
+            <form
+              id="formulation-editor-form"
+              onSubmit={handleSaveProduct}
+              data-lenis-prevent
+              className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 space-y-6 overscroll-contain"
+            >
+              {/* Product Name */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
+                  Product Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  required
+                  placeholder="E.g., Saffron Radiant Elixir"
+                  className="w-full px-4 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-2xl text-sm focus:outline-none focus:border-[#3c4433] focus:bg-white transition-all font-body"
+                />
               </div>
 
-              {/* Row 2: Category, SKU, Volume */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
-                    Category
-                  </label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
-                  >
-                    {CATEGORIES.filter((c) => c !== 'All Products').map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
-                    SKU Code
-                  </label>
+              {/* Slug (URL-friendly name) */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
+                  Slug (URL-friendly name)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-mono text-[#1a1c18]/40">
+                    /product/
+                  </span>
                   <input
                     type="text"
-                    value={formData.sku}
-                    onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                    placeholder="RY-BOT-001"
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
+                    value={formData.slug}
+                    onChange={(e) => handleSlugChange(e.target.value)}
+                    placeholder="saffron-radiant-elixir"
+                    className="w-full pl-20 pr-4 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-2xl font-mono text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433] focus:bg-white transition-all"
                   />
                 </div>
-
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
-                    Volume / Net Wt.
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.volume}
-                    onChange={(e) => setFormData({ ...formData, volume: e.target.value })}
-                    placeholder="50 ml / 100 g"
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
-                  />
-                </div>
+                <p className="text-[11px] text-[#1a1c18]/50 font-body">
+                  Auto-generated from product name. Leave empty to auto-generate from name.
+                </p>
               </div>
 
-              {/* Row 3: Pricing & Stock */}
+              {/* Description */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
+                  Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Pure cold-pressed Ayurvedic botanical formulation handcrafted with potent Himalayan herbs..."
+                  className="w-full px-4 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-2xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433] focus:bg-white transition-all resize-y leading-relaxed font-body"
+                />
+              </div>
+
+              {/* Price, Compare at Price, Stock Quantity */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
-                    Selling Price (INR ₹) *
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
+                    Price *
                   </label>
-                  <input
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                    required
-                    min={1}
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-mono text-[#1a1c18]/50">
+                      ₹
+                    </span>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                      required
+                      min={1}
+                      placeholder="29"
+                      className="w-full pl-7 pr-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-2xl focus:outline-none focus:border-[#3c4433] focus:bg-white font-mono"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
-                    MRP / Compare At (INR ₹)
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
+                    Compare at Price
                   </label>
-                  <input
-                    type="number"
-                    value={formData.compareAtPrice}
-                    onChange={(e) => setFormData({ ...formData, compareAtPrice: Number(e.target.value) })}
-                    min={1}
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-mono text-[#1a1c18]/50">
+                      ₹
+                    </span>
+                    <input
+                      type="number"
+                      value={formData.compareAtPrice ?? ''}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          compareAtPrice: e.target.value ? Number(e.target.value) : null
+                        })
+                      }
+                      min={1}
+                      placeholder="39"
+                      className="w-full pl-7 pr-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-2xl focus:outline-none focus:border-[#3c4433] focus:bg-white font-mono"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
                     Stock Quantity
                   </label>
                   <input
@@ -539,149 +624,305 @@ export const AdminProductsPage: React.FC = () => {
                     value={formData.stockCount ?? 100}
                     onChange={(e) => setFormData({ ...formData, stockCount: Number(e.target.value) })}
                     min={0}
-                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
+                    placeholder="100"
+                    className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-2xl focus:outline-none focus:border-[#3c4433] focus:bg-white font-mono"
                   />
                 </div>
               </div>
 
-              {/* Flags checkboxes */}
-              <div className="flex flex-wrap items-center gap-5 text-xs">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.inStock}
-                    onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
-                    className="rounded text-[#3c4433]"
-                  />
-                  <span>Available In Stock</span>
+              {/* Category */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
+                  Category
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.featured}
-                    onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                    className="rounded text-[#3c4433]"
-                  />
-                  <span>Featured on Home Page</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.bestseller}
-                    onChange={(e) => setFormData({ ...formData, bestseller: e.target.checked })}
-                    className="rounded text-[#3c4433]"
-                  />
-                  <span>Bestseller Tag</span>
-                </label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-2xl text-xs text-[#1a1c18] focus:outline-none focus:border-[#3c4433] focus:bg-white cursor-pointer"
+                >
+                  <option value="">Select Category</option>
+                  {CATEGORIES.filter((c) => c !== 'All Products').map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {/* Image URLs */}
-              <div className="space-y-2 text-xs">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block">
-                  Primary Media Image URL
+              {/* Product Image Upload & Dropzone */}
+              <div className="space-y-2">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/80 block font-medium">
+                  Product Image
                 </label>
+
                 <input
-                  type="text"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="/assets/images/..."
-                  className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl font-mono text-[11px]"
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileUpload(e.target.files[0]);
+                    }
+                  }}
                 />
-              </div>
 
-              {/* Description */}
-              <div className="space-y-2 text-xs">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block">
-                  Description &amp; Editorial Lore
-                </label>
-                <textarea
-                  rows={3}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.12)] rounded-xl focus:outline-none focus:border-[#3c4433]"
-                />
-              </div>
+                {/* Dropzone container */}
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-3xl p-6 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${
+                    isDragging
+                      ? 'border-[#3c4433] bg-[#3c4433]/5 scale-[0.99]'
+                      : formData.image
+                      ? 'border-[rgba(26,28,24,0.15)] bg-[#fafaf8] hover:bg-[#f5f4ef]'
+                      : 'border-[rgba(26,28,24,0.18)] bg-[#fbfbf9] hover:bg-[#f5f4ef]'
+                  }`}
+                >
+                  {formData.image ? (
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-white border border-[rgba(26,28,24,0.1)] shrink-0 shadow-xs">
+                        <img
+                          src={formData.image}
+                          alt="Product Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              '/assets/images/kmKUTujRJWSYGv7PI0IVv3fdjr0.png';
+                          }}
+                        />
+                      </div>
+                      <div className="text-left flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span className="text-xs font-medium text-[#1a1c18] truncate">
+                            Image attached
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#1a1c18]/50 mt-0.5">
+                          Click to replace or drag and drop a new image
+                        </p>
+                        <span className="text-[10px] font-mono text-[#757d5c] uppercase">
+                          PNG, JPG, WEBP
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="w-12 h-12 rounded-2xl bg-white border border-[rgba(26,28,24,0.1)] flex items-center justify-center text-[#757d5c] shadow-xs">
+                        <UploadCloud className="w-6 h-6 text-[#3c4433]" />
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-xs font-medium text-[#1a1c18]">
+                          Click to upload or drag and drop
+                        </p>
+                        <p className="text-[11px] font-mono text-[#1a1c18]/50 uppercase tracking-wide">
+                          PNG, JPG, WEBP
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
 
-              {/* Botanical Ingredients List */}
-              <div className="p-4 bg-[#fbfbf9] rounded-2xl border border-[rgba(26,28,24,0.08)] space-y-3 text-xs">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-[#757d5c] font-bold block">
-                  Botanical Actives &amp; Ingredients
-                </label>
-
-                <div className="space-y-1.5">
-                  {formData.ingredients.map((ing, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between p-2 bg-white rounded-xl border border-[rgba(26,28,24,0.06)]"
+                {/* Direct Image URL input */}
+                <div className="flex items-center gap-2 pt-1">
+                  <div className="relative flex-1">
+                    <Link2 className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#1a1c18]/40" />
+                    <input
+                      type="text"
+                      value={formData.image}
+                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                      placeholder="Or paste image URL (e.g. /assets/images/...)"
+                      className="w-full pl-8 pr-3 py-1.5 bg-[#f5f4ef] border border-[rgba(26,28,24,0.1)] rounded-xl font-mono text-[11px] text-[#1a1c18] focus:outline-none focus:border-[#3c4433]"
+                    />
+                  </div>
+                  {formData.image && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, image: '' })}
+                      className="px-2.5 py-1.5 rounded-xl border border-red-200 text-red-700 bg-red-50 hover:bg-red-100 text-[11px] transition-colors"
                     >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Additional Botanical Details Collapsible */}
+              <div className="border border-[rgba(26,28,24,0.08)] rounded-2xl overflow-hidden bg-[#fafaf8]">
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="w-full px-4 py-3 flex items-center justify-between text-left text-xs font-medium text-[#1a1c18] hover:bg-[#f2f2ef] transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Leaf className="w-4 h-4 text-[#757d5c]" />
+                    <span>Additional Botanical Attributes &amp; Actives</span>
+                  </div>
+                  {showAdvanced ? (
+                    <ChevronUp className="w-4 h-4 text-[#1a1c18]/50" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-[#1a1c18]/50" />
+                  )}
+                </button>
+
+                {showAdvanced && (
+                  <div className="p-4 sm:p-5 border-t border-[rgba(26,28,24,0.08)] space-y-4 bg-white">
+                    {/* Tagline, SKU, Volume */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                       <div>
-                        <strong>{ing.name}</strong>{' '}
-                        {ing.botanicalName && (
-                          <span className="italic text-[#1a1c18]/60">({ing.botanicalName})</span>
-                        )}
-                        <span className="text-[#1a1c18]/50 block text-[11px]">{ing.role}</span>
+                        <label className="text-[10px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+                          Tagline
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.tagline}
+                          onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                          placeholder="100% cold-pressed organic actives"
+                          className="w-full px-3 py-2 bg-[#f5f4ef] border rounded-xl text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+                          SKU Code
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sku}
+                          onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                          placeholder="RY-BOT-001"
+                          className="w-full px-3 py-2 bg-[#f5f4ef] border rounded-xl text-xs font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-mono uppercase tracking-wider text-[#1a1c18]/70 block mb-1">
+                          Volume / Net Wt.
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.volume}
+                          onChange={(e) => setFormData({ ...formData, volume: e.target.value })}
+                          placeholder="100 ml"
+                          className="w-full px-3 py-2 bg-[#f5f4ef] border rounded-xl text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Flags */}
+                    <div className="flex flex-wrap items-center gap-4 text-xs pt-1">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.inStock}
+                          onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
+                          className="rounded text-[#3c4433]"
+                        />
+                        <span>Available In Stock</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.featured}
+                          onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                          className="rounded text-[#3c4433]"
+                        />
+                        <span>Featured on Home Page</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.bestseller}
+                          onChange={(e) => setFormData({ ...formData, bestseller: e.target.checked })}
+                          className="rounded text-[#3c4433]"
+                        />
+                        <span>Bestseller Tag</span>
+                      </label>
+                    </div>
+
+                    {/* Botanical Actives */}
+                    <div className="pt-2 border-t border-[rgba(26,28,24,0.06)] space-y-2 text-xs">
+                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#757d5c] font-bold block">
+                        Botanical Actives &amp; Ingredients
+                      </label>
+                      <div className="space-y-1.5">
+                        {formData.ingredients.map((ing, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between p-2 bg-[#f9f9f6] rounded-xl border border-[rgba(26,28,24,0.06)] text-xs"
+                          >
+                            <div>
+                              <strong>{ing.name}</strong>{' '}
+                              {ing.botanicalName && (
+                                <span className="italic text-[#1a1c18]/60">({ing.botanicalName})</span>
+                              )}
+                              <span className="text-[#1a1c18]/50 block text-[11px]">{ing.role}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveIngredient(idx)}
+                              className="text-red-600 hover:text-red-800 p-1"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 pt-1">
+                        <input
+                          type="text"
+                          value={tempIngName}
+                          onChange={(e) => setTempIngName(e.target.value)}
+                          placeholder="Common name (e.g. Neem)"
+                          className="px-2.5 py-1.5 bg-[#f5f4ef] border rounded-lg text-xs"
+                        />
+                        <input
+                          type="text"
+                          value={tempIngBot}
+                          onChange={(e) => setTempIngBot(e.target.value)}
+                          placeholder="Botanical (e.g. Azadirachta)"
+                          className="px-2.5 py-1.5 bg-[#f5f4ef] border rounded-lg text-xs"
+                        />
+                        <input
+                          type="text"
+                          value={tempIngRole}
+                          onChange={(e) => setTempIngRole(e.target.value)}
+                          placeholder="Role (e.g. Purifying)"
+                          className="px-2.5 py-1.5 bg-[#f5f4ef] border rounded-lg text-xs"
+                        />
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleRemoveIngredient(idx)}
-                        className="text-red-600 hover:text-red-800 p-1"
+                        onClick={handleAddIngredient}
+                        className="px-3 py-1 bg-[#3c4433] text-white rounded-lg text-[11px] font-medium cursor-pointer"
                       >
-                        ✕
+                        + Add Active Ingredient
                       </button>
                     </div>
-                  ))}
-                </div>
-
-                {/* Add new ingredient */}
-                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[rgba(26,28,24,0.06)]">
-                  <input
-                    type="text"
-                    value={tempIngName}
-                    onChange={(e) => setTempIngName(e.target.value)}
-                    placeholder="Common name (e.g. Neem)"
-                    className="px-2.5 py-1.5 bg-white border rounded-lg text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={tempIngBot}
-                    onChange={(e) => setTempIngBot(e.target.value)}
-                    placeholder="Botanical (e.g. Azadirachta)"
-                    className="px-2.5 py-1.5 bg-white border rounded-lg text-xs"
-                  />
-                  <input
-                    type="text"
-                    value={tempIngRole}
-                    onChange={(e) => setTempIngRole(e.target.value)}
-                    placeholder="Role (e.g. Purifying)"
-                    className="px-2.5 py-1.5 bg-white border rounded-lg text-xs"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddIngredient}
-                  className="px-3 py-1 bg-[#3c4433] text-white rounded-lg text-[11px] font-medium"
-                >
-                  + Add Active Ingredient
-                </button>
-              </div>
-
-              {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[rgba(26,28,24,0.08)]">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 border rounded-full text-xs font-medium text-[#1a1c18]/70 hover:bg-[#f2f2ef]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium shadow-xs"
-                >
-                  {editingProduct ? 'Save Changes' : 'Publish Formulation'}
-                </button>
+                  </div>
+                )}
               </div>
             </form>
+
+            {/* Sticky Actions Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 sm:px-8 border-t border-[rgba(26,28,24,0.08)] bg-[#fafaf8] shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="px-5 py-2.5 border border-[rgba(26,28,24,0.15)] rounded-full text-xs font-medium text-[#1a1c18]/70 hover:bg-[#f2f2ef] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="formulation-editor-form"
+                className="px-6 py-2.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium shadow-xs transition-colors cursor-pointer"
+              >
+                {editingProduct ? 'Save Changes' : 'Publish Formulation'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -690,12 +931,12 @@ export const AdminProductsPage: React.FC = () => {
       {deleteConfirmId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border text-center">
-            <div className="w-12 h-12 rounded-full bg-red-100 text-red-700 flex items-center justify-center mx-auto text-xl font-serif">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-700 flex items-center justify-center mx-auto text-xl font-bold">
               !
             </div>
-            <h4 className="font-serif text-xl text-[#1a1c18]">Archive Formulation?</h4>
+            <h4 className="text-xl font-bold text-[#1a1c18] tracking-tight">Archive Formulation?</h4>
             <p className="text-xs text-[#1a1c18]/60 leading-relaxed font-body">
-              This will remove this formulation from the public storefront. You can reset to defaults anytime.
+              This will remove this formulation from the public storefront and catalog.
             </p>
             <div className="flex gap-2 pt-2">
               <button

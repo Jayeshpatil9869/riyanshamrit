@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCommerce } from '../context/CommerceContext';
 import { useRouter, Link } from '../context/RouterContext';
-import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag, Sparkles } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -17,16 +17,11 @@ export const CartDrawer: React.FC = () => {
     freeShippingThreshold,
     isFreeShipping,
     formatPrice,
-    couponCode,
-    appliedCoupon,
-    applyCoupon,
-    removeCoupon,
     orderNote,
     setOrderNote
   } = useCommerce();
 
   const { navigate } = useRouter();
-  const [promoInput, setPromoInput] = useState('');
   const [showNoteField, setShowNoteField] = useState(false);
 
   if (!isCartDrawerOpen) return null;
@@ -218,43 +213,6 @@ export const CartDrawer: React.FC = () => {
                   />
                 )}
               </div>
-
-              {/* Coupon Field */}
-              <div className="pt-2">
-                {appliedCoupon ? (
-                  <div className="flex items-center justify-between p-2.5 bg-[#dac5a7]/20 border border-[#dac5a7] rounded-lg text-xs">
-                    <div className="flex items-center gap-2 text-[#3c4433]">
-                      <Tag className="w-3.5 h-3.5" />
-                      <span className="font-mono font-medium">{appliedCoupon} Applied (-{formatPrice(discountAmount)})</span>
-                    </div>
-                    <button
-                      onClick={removeCoupon}
-                      className="text-xs text-[#1a1c18]/60 hover:text-red-700 underline"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Promo Code (AMRIT10 / HARGHAR)"
-                      value={promoInput}
-                      onChange={(e) => setPromoInput(e.target.value)}
-                      className="flex-1 px-3 py-1.5 text-xs bg-white border border-[rgba(26,28,24,0.15)] rounded-lg font-mono focus:outline-none uppercase"
-                    />
-                    <button
-                      onClick={() => {
-                        applyCoupon(promoInput);
-                        setPromoInput('');
-                      }}
-                      className="px-3 py-1.5 bg-[#3c4433] text-white rounded-lg text-xs font-medium hover:bg-[#1a1c18] transition-colors"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
           )}
         </div>
@@ -270,7 +228,7 @@ export const CartDrawer: React.FC = () => {
 
               {discountAmount > 0 && (
                 <div className="flex justify-between text-[#757d5c] font-medium">
-                  <span>Ayurvedic Patron Discount</span>
+                  <span>Discount</span>
                   <span className="font-mono">-{formatPrice(discountAmount)}</span>
                 </div>
               )}

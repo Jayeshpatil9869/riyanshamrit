@@ -228,17 +228,6 @@ export async function fetchAdminCustomers() {
   );
 }
 
-export async function fetchAdminCoupons() {
-  return adminFetch<{ items: AdminCouponRow[] }>("/api/v1/admin/coupons");
-}
-
-export async function createAdminCoupon(body: Record<string, unknown>) {
-  return adminFetch<AdminCouponRow>("/api/v1/admin/coupons", {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
-}
-
 export async function fetchAdminActivity() {
   return adminFetch<{ items: AdminActivityRow[] }>("/api/v1/admin/activity");
 }
@@ -273,19 +262,6 @@ export type AdminCustomerRow = {
   phone?: string | null;
   avatarUrl?: string | null;
   createdAt?: string;
-};
-
-export type AdminCouponRow = {
-  id: string;
-  code: string;
-  description?: string | null;
-  discountType: string;
-  discountValue: string | number;
-  minOrderAmount?: string | number | null;
-  maxRedemptions?: number | null;
-  redemptionCount?: number | null;
-  isActive?: boolean | null;
-  endsAt?: string | null;
 };
 
 export type AdminActivityRow = {

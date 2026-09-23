@@ -31,10 +31,10 @@ export const ContactPage: React.FC = () => {
         {/* Editorial Header */}
         <div className="py-12 sm:py-16 border-b border-[rgba(26,28,24,0.08)] max-w-3xl">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-3">
-            DIRECT VAIDYA & PATRON COMMUNION
+            CONSULTATION &amp; CUSTOMER SUPPORT
           </span>
           <h1 className="font-serif text-4xl sm:text-6xl text-[#1a1c18] font-normal leading-[1.08] tracking-[-0.03em]">
-            Connect With Our Sangamner Dispensary.
+            Connect With Our Team.
           </h1>
           <p className="text-base sm:text-lg text-[#1a1c18]/70 font-body leading-relaxed mt-4">
             Whether you seek individualized dosage guidance from our registered Ayurvedic doctors, wish to enquire about distributor opportunities, or need assistance with an existing order, our dedicated team is at your service.
@@ -171,7 +171,7 @@ export const ContactPage: React.FC = () => {
                 <div className="flex items-start gap-3.5">
                   <Phone className="w-5 h-5 text-[#757d5c] flex-shrink-0 mt-0.5" />
                   <div>
-                    <strong className="block text-[#1a1c18] font-medium">Patron Helpline & WhatsApp</strong>
+                    <strong className="block text-[#1a1c18] font-medium">Customer Support &amp; WhatsApp</strong>
                     <a href="tel:+919822488300" className="hover:text-[#3c4433] font-mono">
                       +91 98224 88300
                     </a>
@@ -181,7 +181,7 @@ export const ContactPage: React.FC = () => {
                 <div className="flex items-start gap-3.5">
                   <Mail className="w-5 h-5 text-[#757d5c] flex-shrink-0 mt-0.5" />
                   <div>
-                    <strong className="block text-[#1a1c18] font-medium">Electronic Mail</strong>
+                    <strong className="block text-[#1a1c18] font-medium">Email Support</strong>
                     <a href="mailto:support@riyanshamrit.com" className="hover:text-[#3c4433] font-mono">
                       support@riyanshamrit.com
                     </a>

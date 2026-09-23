@@ -50,7 +50,7 @@ export const OrdersPage: React.FC = () => {
               to="/account/profile"
               className="px-4 py-2 rounded-full text-xs font-medium bg-white border border-[rgba(26,28,24,0.1)] text-[#1a1c18]/70 hover:text-[#1a1c18] transition-colors"
             >
-              Patron Profile &amp; Addresses
+              My Profile &amp; Addresses
             </Link>
           </div>
 
@@ -68,7 +68,7 @@ export const OrdersPage: React.FC = () => {
         {/* Header Title */}
         <div>
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-1">
-            PATRON LOGISTICS DASHBOARD
+            ORDERS &amp; TRACKING
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-[#1a1c18] font-normal">
             Your Orders &amp; Real-Time Tracking

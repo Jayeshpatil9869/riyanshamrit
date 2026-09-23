@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter, Link } from '../context/RouterContext';
 import { useCommerce } from '../context/CommerceContext';
-import { Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag, Sparkles, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShieldCheck, Sparkles, ShoppingBag } from 'lucide-react';
 
 export const CartPage: React.FC = () => {
   const {
@@ -15,15 +15,11 @@ export const CartPage: React.FC = () => {
     freeShippingThreshold,
     isFreeShipping,
     formatPrice,
-    appliedCoupon,
-    applyCoupon,
-    removeCoupon,
     orderNote,
     setOrderNote
   } = useCommerce();
 
   const { navigate } = useRouter();
-  const [promoInput, setPromoInput] = useState('');
 
   const progress = Math.min(100, Math.round((cartSubtotal / freeShippingThreshold) * 100));
   const amountNeeded = Math.max(0, freeShippingThreshold - cartSubtotal);
@@ -58,7 +54,7 @@ export const CartPage: React.FC = () => {
         {/* Header */}
         <div className="py-8 border-b border-[rgba(26,28,24,0.08)]">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-1">
-            PATRON DISPENSARY BAG
+            SHOPPING CART
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl text-[#1a1c18] font-normal">
             Your Shopping Bag
@@ -179,51 +175,8 @@ export const CartPage: React.FC = () => {
                 Order Summary
               </h2>
 
-              {/* Coupon Code Input */}
-              <div>
-                <label className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/60 block mb-1.5 font-medium">
-                  Promotional Coupon
-                </label>
-                {appliedCoupon ? (
-                  <div className="flex items-center justify-between p-3 bg-[#dac5a7]/20 border border-[#dac5a7] rounded-xl text-xs">
-                    <div className="flex items-center gap-2 text-[#3c4433]">
-                      <Tag className="w-4 h-4" />
-                      <span className="font-mono font-medium">{appliedCoupon} Applied</span>
-                    </div>
-                    <button
-                      onClick={removeCoupon}
-                      className="text-xs text-[#1a1c18]/60 hover:text-red-700 underline"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="AMRIT10 or HARGHAR"
-                      value={promoInput}
-                      onChange={(e) => setPromoInput(e.target.value)}
-                      className="flex-1 px-3 py-2 text-xs bg-[#f2f2ef] border border-[rgba(26,28,24,0.12)] rounded-xl font-mono uppercase focus:outline-none"
-                    />
-                    <button
-                      onClick={() => {
-                        applyCoupon(promoInput);
-                        setPromoInput('');
-                      }}
-                      className="px-4 py-2 bg-[#3c4433] hover:bg-[#1a1c18] text-white rounded-xl text-xs font-medium transition-colors"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                )}
-                <p className="text-[10px] text-[#1a1c18]/45 mt-1.5 font-mono">
-                  Tip: Use <strong>AMRIT10</strong> for 10% off, or <strong>HARGHAR</strong> for ₹150 off.
-                </p>
-              </div>
-
               {/* Price Breakdown */}
-              <div className="space-y-3 text-xs pt-4 border-t border-[rgba(26,28,24,0.06)]">
+              <div className="space-y-3 text-xs">
                 <div className="flex justify-between text-[#1a1c18]/70">
                   <span>Subtotal</span>
                   <span className="font-mono">{formatPrice(cartSubtotal)}</span>
@@ -231,7 +184,7 @@ export const CartPage: React.FC = () => {
 
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-[#757d5c] font-medium">
-                    <span>Coupon Savings</span>
+                    <span>Discount</span>
                     <span className="font-mono">-{formatPrice(discountAmount)}</span>
                   </div>
                 )}

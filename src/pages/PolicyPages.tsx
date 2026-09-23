@@ -57,10 +57,10 @@ export const RefundPolicyPage: React.FC = () => {
       <div className="kanva-container max-w-3xl">
         <div className="py-12 border-b border-[rgba(26,28,24,0.08)]">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-2">
-            PATRON ASSURANCE
+            CUSTOMER ASSURANCE
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl text-[#1a1c18] font-normal">
-            Cancellation & Refund Policy
+            Cancellation &amp; Refund Policy
           </h1>
           <p className="text-xs text-[#1a1c18]/50 font-mono mt-2">Last Updated: January 2025</p>
         </div>
@@ -69,7 +69,7 @@ export const RefundPolicyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="font-serif text-xl text-[#1a1c18]">1. Order Cancellation Window</h2>
             <p>
-              Patrons may cancel any order prior to physical dispatch from our Sangamner warehouse (within approximately 4 hours of placing the order). Once an airway bill (AWB) is assigned to the carrier, cancellation is no longer possible in transit.
+              Customers may cancel any order prior to physical dispatch from our Sangamner warehouse (within approximately 4 hours of placing the order). Once an airway bill (AWB) is assigned to the carrier, cancellation is no longer possible in transit.
             </p>
           </section>
 
@@ -103,10 +103,10 @@ export const PrivacyPolicyPage: React.FC = () => {
       <div className="kanva-container max-w-3xl">
         <div className="py-12 border-b border-[rgba(26,28,24,0.08)]">
           <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-2">
-            PATRON CONFIDENTIALITY
+            CUSTOMER PRIVACY
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl text-[#1a1c18] font-normal">
-            Privacy Policy & Data Ethics
+            Privacy Policy &amp; Data Ethics
           </h1>
           <p className="text-xs text-[#1a1c18]/50 font-mono mt-2">Last Updated: January 2025</p>
         </div>
@@ -115,7 +115,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="font-serif text-xl text-[#1a1c18]">1. Zero Commercial Data Brokering</h2>
             <p>
-              Riyansh Multitrade Pvt. Ltd. does not sell, rent, or lease patron contact records, consultation inquiries, or order details to third-party advertising syndicates. All information collected is strictly utilized to deliver your Ayurvedic regimens and facilitate Vaidya consultations.
+              Riyansh Multitrade Pvt. Ltd. does not sell, rent, or lease customer contact records, consultation inquiries, or order details to third-party advertising syndicates. All information collected is strictly utilized to deliver your Ayurvedic regimens and facilitate Vaidya consultations.
             </p>
           </section>
 

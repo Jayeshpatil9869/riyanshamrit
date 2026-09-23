@@ -230,7 +230,7 @@ export const ProductDetailPage: React.FC = () => {
             <div className="p-4 bg-white rounded-2xl border border-[rgba(26,28,24,0.08)] flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-mono tracking-wider uppercase text-[#1a1c18]/40 block mb-0.5">
-                  Special Patron Price (Incl. of all taxes)
+                  Special Offer Price (Incl. of all taxes)
                 </span>
                 <div className="flex items-baseline gap-2.5">
                   <span className="font-mono text-2xl sm:text-3xl font-bold text-[#1a1c18]">
@@ -338,7 +338,7 @@ export const ProductDetailPage: React.FC = () => {
               { id: 'ingredients', label: 'Ayurvedic Botanicals' },
               { id: 'benefits', label: 'Classical Benefits' },
               { id: 'dosage', label: 'Dosage & Anupana' },
-              { id: 'reviews', label: `Patron Reviews (${customReviews.length})` }
+              { id: 'reviews', label: `Customer Reviews (${customReviews.length})` }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -499,7 +499,7 @@ export const ProductDetailPage: React.FC = () => {
                     type="submit"
                     className="px-6 py-2.5 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-full text-xs font-medium transition-colors"
                   >
-                    Submit Patron Review
+                    Submit Review
                   </button>
                 </form>
 

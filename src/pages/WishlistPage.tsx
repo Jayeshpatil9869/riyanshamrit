@@ -21,10 +21,10 @@ export const WishlistPage: React.FC = () => {
         <div className="py-8 sm:py-12 border-b border-[rgba(26,28,24,0.08)] flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <span className="text-[11px] font-mono tracking-[0.24em] uppercase text-[#757d5c] font-semibold block mb-1">
-              PATRON SANCTUARY
+              MY WISHLIST
             </span>
             <h1 className="font-serif text-3xl sm:text-5xl text-[#1a1c18] font-normal">
-              Saved Formulations
+              Saved Products
             </h1>
             <p className="text-xs sm:text-sm text-[#1a1c18]/60 mt-2 font-body">
               {wishlist.length} classical Ayurvedic {wishlist.length === 1 ? 'item' : 'items'} saved for future rejuvenation.

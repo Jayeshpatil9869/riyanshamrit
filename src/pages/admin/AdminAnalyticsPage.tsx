@@ -44,12 +44,12 @@ export const AdminAnalyticsPage: React.FC = () => {
       {/* Header */}
       <div className="pb-6 border-b border-[rgba(26,28,24,0.08)]">
         <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block mb-1">
-          REVENUE &amp; PATRON INTELLIGENCE
+          REVENUE &amp; CUSTOMER ANALYTICS
         </span>
-        <h1 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
+        <h1 className="font-bold text-2xl sm:text-3xl text-[#1a1c18] tracking-tight">
           Store Analytics &amp; Reports
         </h1>
-        <p className="text-xs text-[#1a1c18]/60 mt-1 font-body">
+        <p className="text-xs text-[#1a1c18]/60 mt-1">
           Breakdown of formulation demand, territorial logistics dispatch, and gateway conversion metrics.
         </p>
       </div>
@@ -61,7 +61,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           <div className="flex items-center justify-between pb-3 border-b border-[rgba(26,28,24,0.06)]">
             <div className="flex items-center gap-2">
               <Leaf className="w-4 h-4 text-[#757d5c]" />
-              <h3 className="font-serif text-xl text-[#1a1c18]">Revenue by Formulation Line</h3>
+              <h3 className="font-bold text-lg text-[#1a1c18] tracking-tight">Revenue by Category</h3>
             </div>
             <span className="text-[10px] font-mono text-[#1a1c18]/50 uppercase">FY 2026</span>
           </div>
@@ -99,7 +99,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           <div className="flex items-center justify-between pb-3 border-b border-[rgba(26,28,24,0.06)]">
             <div className="flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-[#757d5c]" />
-              <h3 className="font-serif text-xl text-[#1a1c18]">Payment Gateways Split</h3>
+              <h3 className="font-bold text-lg text-[#1a1c18] tracking-tight">Payment Gateways Split</h3>
             </div>
             <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full font-semibold">
               98.4% Success Rate
@@ -107,7 +107,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           </div>
 
           <p className="text-xs text-[#1a1c18]/60">
-            UPI is the dominant payment vehicle for wellness patron checkouts across India.
+            UPI is the dominant payment method for customer checkouts across India.
           </p>
 
           <div className="space-y-4">
@@ -134,7 +134,7 @@ export const AdminAnalyticsPage: React.FC = () => {
         <div className="flex items-center justify-between pb-3 border-b border-[rgba(26,28,24,0.06)]">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-[#757d5c]" />
-            <h3 className="font-serif text-xl text-[#1a1c18]">Top Dispatch Destinations</h3>
+            <h3 className="font-bold text-lg text-[#1a1c18] tracking-tight">Top Dispatch Destinations</h3>
           </div>
           <span className="text-[10px] font-mono text-[#1a1c18]/50 uppercase">Pan-India Express</span>
         </div>

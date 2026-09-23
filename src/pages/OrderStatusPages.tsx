@@ -50,7 +50,7 @@ export const OrderSuccessPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[rgba(26,28,24,0.06)] gap-2">
               <div>
                 <span className="text-[10px] font-mono text-[#1a1c18]/50 uppercase tracking-wider block">
-                  PATRON ORDER REFERENCE
+                  ORDER REFERENCE
                 </span>
                 <span className="font-mono text-base font-bold text-[#1a1c18]">
                   {currentOrder.id}
@@ -69,7 +69,7 @@ export const OrderSuccessPage: React.FC = () => {
             {/* Items summary */}
             <div className="space-y-3">
               <span className="text-[11px] font-mono uppercase tracking-wider text-[#1a1c18]/50 font-semibold block">
-                Formulations in Package ({currentOrder.items.length})
+                Items in Package ({currentOrder.items.length})
               </span>
               {currentOrder.items.map((item) => (
                 <div key={item.productId} className="flex items-center justify-between text-xs">

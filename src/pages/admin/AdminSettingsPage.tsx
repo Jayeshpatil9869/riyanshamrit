@@ -51,10 +51,10 @@ export const AdminSettingsPage: React.FC = () => {
           <span className="text-[10px] font-mono tracking-widest uppercase text-[#757d5c] font-semibold block mb-1">
             STOREFRONT CONFIGURATIONS
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl text-[#1a1c18]">
+          <h1 className="font-bold text-2xl sm:text-3xl text-[#1a1c18] tracking-tight">
             Dispensary &amp; Checkout Settings
           </h1>
-          <p className="text-xs text-[#1a1c18]/60 mt-1 font-body">
+          <p className="text-xs text-[#1a1c18]/60 mt-1">
             Manage global announcement marquee, shipping fee thresholds, GST rates, and customer support channels.
           </p>
         </div>
@@ -73,7 +73,7 @@ export const AdminSettingsPage: React.FC = () => {
         <div className="bg-white rounded-3xl border border-[rgba(26,28,24,0.08)] p-6 sm:p-8 shadow-xs space-y-5">
           <div className="flex items-center gap-2.5 pb-3 border-b border-[rgba(26,28,24,0.06)]">
             <Bell className="w-4 h-4 text-[#757d5c]" />
-            <h3 className="font-serif text-xl text-[#1a1c18]">Global Announcement Bar &amp; Ticker</h3>
+            <h3 className="font-bold text-lg text-[#1a1c18] tracking-tight">Global Announcement Bar &amp; Ticker</h3>
           </div>
 
           <div className="space-y-4 text-xs">
@@ -122,7 +122,7 @@ export const AdminSettingsPage: React.FC = () => {
         <div className="bg-white rounded-3xl border border-[rgba(26,28,24,0.08)] p-6 sm:p-8 shadow-xs space-y-5">
           <div className="flex items-center gap-2.5 pb-3 border-b border-[rgba(26,28,24,0.06)]">
             <Truck className="w-4 h-4 text-[#757d5c]" />
-            <h3 className="font-serif text-xl text-[#1a1c18]">Shipping &amp; Cart Thresholds</h3>
+            <h3 className="font-bold text-lg text-[#1a1c18] tracking-tight">Shipping &amp; Cart Thresholds</h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -165,7 +165,7 @@ export const AdminSettingsPage: React.FC = () => {
         <div className="bg-white rounded-3xl border border-[rgba(26,28,24,0.08)] p-6 sm:p-8 shadow-xs space-y-5">
           <div className="flex items-center gap-2.5 pb-3 border-b border-[rgba(26,28,24,0.06)]">
             <Store className="w-4 h-4 text-[#757d5c]" />
-            <h3 className="font-serif text-xl text-[#1a1c18]">Store Identity &amp; Support Channels</h3>
+            <h3 className="font-bold text-lg text-[#1a1c18] tracking-tight">Store Identity &amp; Support Channels</h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">

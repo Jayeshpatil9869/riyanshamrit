@@ -37,17 +37,6 @@ export const checkoutSchema = z.object({
   shippingAddress: z.record(z.unknown()),
   billingAddress: z.record(z.unknown()).optional(),
   notes: z.string().max(1000).optional(),
-  couponCode: z.string().optional(),
-});
-
-export const couponCreateSchema = z.object({
-  code: z.string().min(2).max(40),
-  description: z.string().optional(),
-  discountType: z.enum(["percent", "percentage", "fixed"]),
-  discountValue: z.coerce.number().positive(),
-  minOrderAmount: z.coerce.number().nonnegative().optional(),
-  maxRedemptions: z.coerce.number().int().positive().optional(),
-  isActive: z.boolean().optional(),
 });
 
 export const reviewCreateSchema = z.object({

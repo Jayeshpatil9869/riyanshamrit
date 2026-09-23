@@ -30,7 +30,7 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#f5f4ef] text-[#1a1c18] flex items-center justify-center px-4 py-10">
+    <div className="admin-scope min-h-screen relative overflow-hidden bg-[#f5f4ef] text-[#1a1c18] flex items-center justify-center px-4 py-10">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -49,15 +49,15 @@ export const AdminLoginPage: React.FC = () => {
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center space-y-3">
           <div className="mx-auto w-14 h-14 rounded-2xl bg-[#1e1f1c] border border-[#dac5a7]/40 flex items-center justify-center shadow-lg">
-            <span className="font-serif text-[#dac5a7] text-xl font-bold tracking-wide">
+            <span className="text-[#dac5a7] text-xl font-bold tracking-wider">
               RA
             </span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl text-[#1e1f1c] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#1e1f1c] tracking-tight">
             Riyansh Amrit
           </h1>
-          <p className="text-xs font-mono uppercase tracking-[0.22em] text-[#3c4433]">
-            Apothecary Admin Portal
+          <p className="text-xs font-mono uppercase tracking-[0.22em] text-[#3c4433] font-medium">
+            Store Admin Portal
           </p>
         </div>
 

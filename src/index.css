@@ -646,3 +646,32 @@ html.lenis, html.lenis body {
     animation: none;
   }
 }
+
+/* ==========================================================================
+   ADMIN PANEL DEDICATED TYPOGRAPHY SYSTEM (PLUS JAKARTA SANS + INTER)
+   ========================================================================== */
+.admin-scope {
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: -0.01em;
+}
+
+.admin-scope h1,
+.admin-scope h2,
+.admin-scope h3,
+.admin-scope h4,
+.admin-scope h5,
+.admin-scope h6,
+.admin-scope .font-serif {
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: -0.025em;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.admin-scope .font-mono,
+.admin-scope code,
+.admin-scope kbd,
+.admin-scope .tabular-nums {
+  font-family: 'Geist', 'Space Mono', monospace !important;
+  font-feature-settings: "tnum" on, "zero" on;
+}
+

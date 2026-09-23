@@ -18,7 +18,7 @@ const REVIEWS: Review[] = [
     id: 'rev-1',
     quote: 'My skin has never felt more balanced, supple, and radiant. The Kumkumadi Youth Elixir is a masterclass in classical Ayurvedic lipid chemistry.',
     author: 'Ananya Sharma',
-    role: 'Verified Ayurvedic Patron',
+    role: 'Verified Customer',
     product: 'Kumkumadi Youth Elixir',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     rating: 5,
@@ -36,7 +36,7 @@ const REVIEWS: Review[] = [
     id: 'rev-3',
     quote: 'The amber glass dropper, the earthy natural aroma, and the immediate soothing sensation on sensitized skin make this the pinnacle of sustainable wellness.',
     author: 'Priya Mukherjee',
-    role: 'Wellness Columnist & Long-Term Patron',
+    role: 'Wellness Columnist & Customer',
     product: 'Moringa Phyto-Drops',
     avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
     rating: 5,
@@ -85,7 +85,7 @@ export const ReviewsSwiper: React.FC = () => {
             {/* Verified Badge */}
             <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-[#757d5c] font-medium">
               <ShieldCheck className="w-4 h-4" />
-              <span>Verified Patron</span>
+              <span>Verified Customer</span>
             </div>
           </div>
 

@@ -7,17 +7,14 @@ import {
   User,
   Currency,
   ShippingAddress,
-  Coupon,
   StoreSettings,
   AdminActivityLog
 } from '../types';
 import { RIYANSH_PRODUCTS } from '../data/products';
 import {
-  createAdminCoupon,
   createAdminProduct,
   deleteAdminProduct,
   fetchAdminActivity,
-  fetchAdminCoupons,
   fetchAdminCustomers,
   fetchAdminOrders,
   fetchAdminProducts,
@@ -25,7 +22,6 @@ import {
   updateAdminOrderStatus,
   updateAdminProduct,
   type AdminActivityRow,
-  type AdminCouponRow,
   type AdminCustomerRow,
   type AdminOrderRow,
   type AdminProductRow,
@@ -57,11 +53,7 @@ interface CommerceContextType {
   clearCart: () => void;
   orderNote: string;
   setOrderNote: (note: string) => void;
-  couponCode: string;
   discountAmount: number;
-  appliedCoupon: string | null;
-  applyCoupon: (code: string) => boolean;
-  removeCoupon: () => void;
   freeShippingThreshold: number;
   isFreeShipping: boolean;
   shippingFee: number;
@@ -129,13 +121,6 @@ interface CommerceContextType {
   ) => void;
   cancelOrder: (orderId: string, reason?: string) => void;
 
-  // Coupons Management
-  coupons: Coupon[];
-  addCoupon: (coupon: Omit<Coupon, 'id' | 'usageCount'>) => Coupon;
-  updateCoupon: (id: string, updates: Partial<Coupon>) => void;
-  deleteCoupon: (id: string) => void;
-  toggleCoupon: (id: string) => void;
-
   // Storefront Controls & Settings
   storeSettings: StoreSettings;
   updateStoreSettings: (updates: Partial<StoreSettings>) => void;
@@ -172,63 +157,12 @@ const SYMBOLS: Record<Currency, string> = {
   EUR: '€',
 };
 
-const INITIAL_COUPONS: Coupon[] = [
-  {
-    id: 'cpn-01',
-    code: 'AMRIT10',
-    discountType: 'percentage',
-    value: 10,
-    minSpend: 500,
-    usageCount: 142,
-    maxUses: 1000,
-    expiryDate: '2027-12-31',
-    isActive: true,
-    description: '10% discount on all Ayurvedic formulations above ₹500'
-  },
-  {
-    id: 'cpn-02',
-    code: 'HARGHAR',
-    discountType: 'fixed',
-    value: 150,
-    minSpend: 999,
-    usageCount: 89,
-    maxUses: 500,
-    expiryDate: '2027-06-30',
-    isActive: true,
-    description: 'Flat ₹150 off on wellness regimen orders above ₹999'
-  },
-  {
-    id: 'cpn-03',
-    code: 'WELLNESS',
-    discountType: 'percentage',
-    value: 15,
-    minSpend: 1500,
-    usageCount: 64,
-    maxUses: 300,
-    expiryDate: '2027-09-30',
-    isActive: true,
-    description: '15% premium patron concession on orders above ₹1,500'
-  },
-  {
-    id: 'cpn-04',
-    code: 'VAIDYA20',
-    discountType: 'percentage',
-    value: 20,
-    minSpend: 2500,
-    usageCount: 28,
-    maxUses: 100,
-    expiryDate: '2026-12-31',
-    isActive: true,
-    description: '20% special practitioner discount on apothecary bulk orders'
-  }
-];
-
 const INITIAL_STORE_SETTINGS: StoreSettings = {
   announcementText: 'Complimentary Pan-India Express Delivery on all orders above ₹999 • Handcrafted in Sangamner',
   isAnnouncementActive: true,
   marqueeSpeed: 30,
   freeShippingThreshold: 999,
-  supportEmail: 'patroncare@riyanshamrit.com',
+  supportEmail: 'care@riyanshamrit.com',
   supportPhone: '+91 98224 88300',
   storeName: 'Riyansh Amrit — Luxury Ayurvedic Botanicals',
   maintenanceMode: false,
@@ -500,9 +434,9 @@ const INITIAL_ACTIVITY_LOGS: AdminActivityLog[] = [
     id: 'log-02',
     timestamp: 'Today at 09:15 AM',
     adminName: 'Jayesh B. Patil',
-    action: 'Activated Coupon AMRIT10',
-    category: 'coupons',
-    details: 'Set 10% discount threshold at ₹500 for seasonal harvest festival'
+    action: 'Updated Store Announcement',
+    category: 'settings',
+    details: 'Enabled complimentary express delivery threshold at ₹999'
   },
   {
     id: 'log-03',
@@ -555,16 +489,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   });
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
 
-  // 4. Coupons State
-  const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    try {
-      const saved = localStorage.getItem('riyansh_coupons');
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return INITIAL_COUPONS;
-  });
-
-  // 5. Storefront Settings
+  // 4. Storefront Settings
   const [storeSettings, setStoreSettings] = useState<StoreSettings>(() => {
     try {
       const saved = localStorage.getItem('riyansh_store_settings');
@@ -573,7 +498,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return INITIAL_STORE_SETTINGS;
   });
 
-  // 6. Activity Logs
+  // 5. Activity Logs
   const [activityLogs, setActivityLogs] = useState<AdminActivityLog[]>(() => {
     try {
       const saved = localStorage.getItem('riyansh_activity_logs');
@@ -582,7 +507,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return INITIAL_ACTIVITY_LOGS;
   });
 
-  // 7. Cart State
+  // 6. Cart State
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('riyansh_cart');
@@ -595,8 +520,6 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [orderNote, setOrderNote] = useState('');
-  const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>('AMRIT10');
 
   // 8. Wishlist State
   const [wishlist, setWishlist] = useState<WishlistItem[]>(() => {
@@ -722,22 +645,6 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     savedAddresses: [],
   });
 
-  const mapApiCoupon = (row: AdminCouponRow): Coupon => ({
-    id: row.id,
-    code: row.code,
-    discountType:
-      row.discountType === 'fixed' || row.discountType === 'fixed_amount'
-        ? 'fixed'
-        : 'percentage',
-    value: Number(row.discountValue) || 0,
-    minSpend: Number(row.minOrderAmount ?? 0) || 0,
-    usageCount: row.redemptionCount ?? 0,
-    maxUses: row.maxRedemptions ?? undefined,
-    expiryDate: row.endsAt ? String(row.endsAt).slice(0, 10) : undefined,
-    isActive: row.isActive !== false,
-    description: row.description || '',
-  });
-
   const mapApiActivity = (row: AdminActivityRow): AdminActivityLog => {
     const entity = String(row.entityType || 'system');
     const category: AdminActivityLog['category'] =
@@ -745,11 +652,9 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         ? 'products'
         : entity.includes('order')
           ? 'orders'
-          : entity.includes('coupon')
-            ? 'coupons'
-            : entity.includes('user') || entity.includes('customer')
-              ? 'customers'
-              : 'settings';
+          : entity.includes('user') || entity.includes('customer')
+            ? 'customers'
+            : 'settings';
     return {
       id: row.id,
       action: row.action,
@@ -768,19 +673,17 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       return;
     }
     try {
-      const [productRes, orderRes, customerRes, couponRes, activityRes] =
+      const [productRes, orderRes, customerRes, activityRes] =
         await Promise.all([
           fetchAdminProducts(),
           fetchAdminOrders(),
           fetchAdminCustomers(),
-          fetchAdminCoupons().catch(() => ({ items: [] as AdminCouponRow[] })),
           fetchAdminActivity().catch(() => ({ items: [] as AdminActivityRow[] })),
         ]);
 
       setProducts(productRes.items.map(mapApiProduct));
       setOrders(orderRes.items.map(mapApiOrder));
       setUsers(customerRes.items.map(mapApiCustomer));
-      if (couponRes.items.length) setCoupons(couponRes.items.map(mapApiCoupon));
       if (activityRes.items.length) setActivityLogs(activityRes.items.map(mapApiActivity));
       setAdminBackendConnected(true);
     } catch (err) {
@@ -808,10 +711,6 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     try { localStorage.setItem('riyansh_orders', JSON.stringify(orders)); } catch {}
   }, [orders]);
-
-  useEffect(() => {
-    try { localStorage.setItem('riyansh_coupons', JSON.stringify(coupons)); } catch {}
-  }, [coupons]);
 
   useEffect(() => {
     try { localStorage.setItem('riyansh_store_settings', JSON.stringify(storeSettings)); } catch {}
@@ -870,49 +769,8 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const freeShippingThreshold = storeSettings.freeShippingThreshold;
   const isFreeShipping = cartSubtotal >= freeShippingThreshold;
   const shippingFee = cart.length === 0 ? 0 : isFreeShipping ? 0 : 99;
-
-  let discountAmount = 0;
-  if (appliedCoupon) {
-    const activeCpn = coupons.find(
-      (c) => c.code.toUpperCase() === appliedCoupon.toUpperCase() && c.isActive
-    );
-    if (activeCpn) {
-      if (activeCpn.discountType === 'percentage') {
-        discountAmount = Math.round((cartSubtotal * activeCpn.value) / 100);
-      } else {
-        discountAmount = Math.min(cartSubtotal, activeCpn.value);
-      }
-    }
-  }
-
-  const cartTotal = Math.max(0, cartSubtotal - discountAmount + shippingFee);
-
-  const applyCoupon = (code: string): boolean => {
-    const normalized = code.trim().toUpperCase();
-    const found = coupons.find((c) => c.code.toUpperCase() === normalized && c.isActive);
-    if (found) {
-      if (cartSubtotal < found.minSpend) {
-        addToast(`Minimum cart value of ₹${found.minSpend} required for ${normalized}`, 'error');
-        return false;
-      }
-      setAppliedCoupon(normalized);
-      setCouponCode(normalized);
-      // Increment usage count
-      setCoupons((prev) =>
-        prev.map((c) => (c.id === found.id ? { ...c, usageCount: c.usageCount + 1 } : c))
-      );
-      addToast(`Promo code ${normalized} applied (${found.discountType === 'percentage' ? found.value + '%' : '₹' + found.value} off)`, 'success');
-      return true;
-    }
-    addToast('Invalid or expired coupon code', 'error');
-    return false;
-  };
-
-  const removeCoupon = () => {
-    setAppliedCoupon(null);
-    setCouponCode('');
-    addToast('Coupon removed', 'info');
-  };
+  const discountAmount = 0;
+  const cartTotal = Math.max(0, cartSubtotal + shippingFee);
 
   // Cart operations
   const addToCart = (product: Product, quantity = 1, selectedVolume?: string) => {
@@ -1068,7 +926,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (!existingUser) {
       existingUser = {
         id: `usr-${Date.now()}`,
-        name: name || email.split('@')[0] || 'Valued Patron',
+        name: name || email.split('@')[0] || 'Valued Customer',
         email,
         phone: '+91 98000 00000',
         role,
@@ -1082,7 +940,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setUsers((prev) => [existingUser!, ...prev]);
     }
     setUser(existingUser);
-    addToast(`Signed in as ${existingUser.name} (${existingUser.role?.toUpperCase() || 'PATRON'})`, 'success');
+    addToast(`Signed in as ${existingUser.name} (${existingUser.role?.toUpperCase() || 'CUSTOMER'})`, 'success');
   };
 
   const signup = (name: string, email: string) => {
@@ -1111,7 +969,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const loginAsDemoPatron = () => {
     const patronUser = users.find((u) => u.role === 'customer') || INITIAL_DEMO_USERS[1];
     setUser(patronUser);
-    addToast(`Logged in as Patron (${patronUser.name})`, 'success');
+    addToast(`Logged in as Customer (${patronUser.name})`, 'success');
   };
 
   const logout = () => {
@@ -1167,8 +1025,8 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       totalSpent: 0
     };
     setUsers((prev) => [newUser, ...prev]);
-    logAdminAction(`Registered patron "${newUser.name}"`, 'customers', `Role: ${newUser.role}`);
-    addToast(`Patron ${newUser.name} created`, 'success');
+    logAdminAction(`Registered customer "${newUser.name}"`, 'customers', `Role: ${newUser.role}`);
+    addToast(`Customer ${newUser.name} created`, 'success');
   };
 
   const updateUser = (id: string, updates: Partial<User>) => {
@@ -1336,48 +1194,6 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  // Coupons Admin operations
-  const addCoupon = (couponData: Omit<Coupon, 'id' | 'usageCount'>): Coupon => {
-    const id = `cpn-${Date.now()}`;
-    const newCoupon: Coupon = {
-      ...couponData,
-      id,
-      code: couponData.code.toUpperCase().trim(),
-      usageCount: 0
-    };
-    setCoupons((prev) => [newCoupon, ...prev]);
-    logAdminAction(`Created Promo Code "${newCoupon.code}"`, 'coupons', `${newCoupon.discountType === 'percentage' ? newCoupon.value + '%' : '₹' + newCoupon.value} discount`);
-    addToast(`Coupon "${newCoupon.code}" created`, 'success');
-    return newCoupon;
-  };
-
-  const updateCoupon = (id: string, updates: Partial<Coupon>) => {
-    setCoupons((prev) =>
-      prev.map((c) => {
-        if (c.id === id) {
-          const updated = { ...c, ...updates };
-          if (updates.code) updated.code = updates.code.toUpperCase().trim();
-          logAdminAction(`Updated Coupon "${updated.code}"`, 'coupons', `Modified parameters`);
-          return updated;
-        }
-        return c;
-      })
-    );
-    addToast('Coupon updated', 'success');
-  };
-
-  const deleteCoupon = (id: string) => {
-    setCoupons((prev) => prev.filter((c) => c.id !== id));
-    addToast('Coupon removed', 'info');
-  };
-
-  const toggleCoupon = (id: string) => {
-    setCoupons((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, isActive: !c.isActive } : c))
-    );
-    addToast('Coupon status updated', 'info');
-  };
-
   // Store Settings
   const updateStoreSettings = (updates: Partial<StoreSettings>) => {
     setStoreSettings((prev) => {
@@ -1408,11 +1224,7 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         clearCart,
         orderNote,
         setOrderNote,
-        couponCode,
         discountAmount,
-        appliedCoupon,
-        applyCoupon,
-        removeCoupon,
         freeShippingThreshold,
         isFreeShipping,
         shippingFee,
@@ -1463,12 +1275,6 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         lastOrder,
         updateOrderStatus,
         cancelOrder,
-
-        coupons,
-        addCoupon,
-        updateCoupon,
-        deleteCoupon,
-        toggleCoupon,
 
         storeSettings,
         updateStoreSettings,
