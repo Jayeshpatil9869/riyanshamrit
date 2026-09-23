@@ -7,7 +7,6 @@ import {
   User,
   Lock,
   Mail,
-  Sparkles,
   Shield,
   CheckCircle2,
   Eye,
@@ -19,8 +18,6 @@ export const LoginPage: React.FC = () => {
     user,
     loginWithEmail,
     loginWithGoogle,
-    loginAsDemoAdmin,
-    loginAsDemoPatron,
     logout,
     addToast
   } = useCommerce();
@@ -42,16 +39,6 @@ export const LoginPage: React.FC = () => {
     } else {
       navigate('/account/profile');
     }
-  };
-
-  const handleAdminDemo = () => {
-    loginAsDemoAdmin();
-    navigate('/admin');
-  };
-
-  const handlePatronDemo = () => {
-    loginAsDemoPatron();
-    navigate('/account/profile');
   };
 
   if (user) {
@@ -125,35 +112,6 @@ export const LoginPage: React.FC = () => {
 
         {/* Card Form */}
         <div className="bg-white rounded-[2rem] border border-[rgba(26,28,24,0.08)] p-7 sm:p-9 shadow-[0_20px_50px_rgba(26,28,24,0.06)] space-y-5">
-          {/* Quick 1-Click Evaluation Presets */}
-          <div className="p-3.5 bg-[#fbfbf9] rounded-2xl border border-[rgba(26,28,24,0.08)] space-y-2.5">
-            <div className="flex items-center justify-between text-[10px] font-mono uppercase text-[#757d5c] font-bold tracking-wider">
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#dac5a7]" />
-                <span>Instant Evaluation Presets</span>
-              </span>
-              <span className="text-[9px] text-[#1a1c18]/40 font-normal">1-Click</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={handleAdminDemo}
-                className="py-2.5 px-3 bg-[#1a1c18] hover:bg-[#3c4433] text-white rounded-xl text-[11px] font-medium flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
-              >
-                <Shield className="w-3.5 h-3.5 text-[#dac5a7]" />
-                <span>Admin Login</span>
-              </button>
-              <button
-                type="button"
-                onClick={handlePatronDemo}
-                className="py-2.5 px-3 bg-white hover:bg-[#f2f2ef] text-[#1a1c18] border border-[rgba(26,28,24,0.14)] rounded-xl text-[11px] font-medium flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
-              >
-                <User className="w-3.5 h-3.5 text-[#757d5c]" />
-                <span>Customer Login</span>
-              </button>
-            </div>
-          </div>
-
           {/* Google Sign In */}
           <button
             onClick={() => {
