@@ -35,12 +35,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       className="group relative flex flex-col cursor-pointer transition-all duration-300"
     >
       {/* Image Container with Editorial Aspect Ratio */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-[#e8e8e1] border border-[rgba(26,28,24,0.06)]">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-gradient-to-b from-[#fafaf7] to-[#edece6] border border-[rgba(26,28,24,0.06)] flex items-center justify-center p-4">
         {/* Main Product Image */}
         <img
           src={isHovered && product.hoverImage ? product.hoverImage : product.image}
           alt={product.name}
-          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          className="h-full w-full object-contain drop-shadow-xs transition-transform duration-500 ease-out group-hover:scale-105"
           referrerPolicy="no-referrer"
           loading="lazy"
         />

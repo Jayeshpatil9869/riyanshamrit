@@ -5,7 +5,6 @@ import { SAMPLE_REVIEWS } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import { BotanicalHerbExplorer } from '../components/ui/BotanicalHerbExplorer';
 import {
   Star,
   Check,
@@ -18,8 +17,7 @@ import {
   ChevronRight,
   Clock,
   Award,
-  Truck,
-  Microscope
+  Truck
 } from 'lucide-react';
 import { Product, Review } from '../types';
 
@@ -39,7 +37,11 @@ export const ProductDetailPage: React.FC = () => {
   const [activeImage, setActiveImage] = useState(product.image);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'ingredients' | 'benefits' | 'dosage' | 'reviews'>('ingredients');
-  const [isExplorerOpen, setIsExplorerOpen] = useState(false);
+
+  // Synchronize activeImage when product changes
+  React.useEffect(() => {
+    setActiveImage(product.image);
+  }, [product.slug, product.image]);
 
   // Review form state
   const [newReviewAuthor, setNewReviewAuthor] = useState('');
@@ -114,16 +116,16 @@ export const ProductDetailPage: React.FC = () => {
           {/* Left: Product Gallery (7 cols) */}
           <div className="lg:col-span-7 space-y-4">
             {/* Primary Large Image */}
-            <div className="relative aspect-[4/4] sm:aspect-[4/3] rounded-3xl overflow-hidden bg-[#e8e8e1] border border-[rgba(26,28,24,0.06)] shadow-sm">
+            <div className="relative aspect-[4/4] sm:aspect-[4/3] rounded-3xl overflow-hidden bg-gradient-to-b from-[#fafaf7] to-[#edece6] border border-[rgba(26,28,24,0.08)] shadow-sm flex items-center justify-center p-6 sm:p-10 group">
               <img
                 src={activeImage}
                 alt={product.name}
-                className="w-full h-full object-cover transition-opacity duration-300"
+                className="w-full h-full object-contain max-h-[480px] drop-shadow-[0_10px_20px_rgba(26,28,24,0.08)] transition-transform duration-500 ease-out group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
 
               {product.tag && (
-                <div className="absolute top-5 left-5">
+                <div className="absolute top-5 left-5 z-10">
                   <span className="px-3.5 py-1.5 bg-[#1a1c18] text-[#dac5a7] rounded-full text-xs font-mono uppercase tracking-wider font-semibold shadow-xs">
                     {product.tag}
                   </span>
@@ -133,7 +135,7 @@ export const ProductDetailPage: React.FC = () => {
               {/* Wishlist Button */}
               <button
                 onClick={() => toggleWishlist(product)}
-                className={`absolute top-5 right-5 p-3 rounded-full backdrop-blur-md transition-colors ${
+                className={`absolute top-5 right-5 z-10 p-3 rounded-full backdrop-blur-md transition-colors ${
                   isWish
                     ? 'bg-white text-red-600 shadow-sm'
                     : 'bg-white/80 text-[#1a1c18]/70 hover:text-[#1a1c18] hover:bg-white'
@@ -150,16 +152,16 @@ export const ProductDetailPage: React.FC = () => {
                 <button
                   key={idx}
                   onClick={() => setActiveImage(img)}
-                  className={`relative w-20 h-20 rounded-xl overflow-hidden bg-[#e8e8e1] border-2 transition-all flex-shrink-0 ${
+                  className={`relative w-20 h-20 rounded-xl overflow-hidden bg-white border-2 p-1.5 flex items-center justify-center transition-all flex-shrink-0 cursor-pointer ${
                     activeImage === img
-                      ? 'border-[#3c4433] scale-95 shadow-xs'
-                      : 'border-transparent opacity-70 hover:opacity-100'
+                      ? 'border-[#3c4433] scale-95 shadow-sm ring-2 ring-[#3c4433]/20'
+                      : 'border-[rgba(26,28,24,0.1)] opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img
                     src={img}
                     alt={`${product.name} view ${idx + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain drop-shadow-xs"
                     referrerPolicy="no-referrer"
                   />
                 </button>
@@ -362,18 +364,11 @@ export const ProductDetailPage: React.FC = () => {
             {/* 1. Botanicals */}
             {activeTab === 'ingredients' && (
               <div className="space-y-6 max-w-3xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
                   <p className="text-sm text-[#1a1c18]/70 font-body leading-relaxed">
                     Every botanical in {product.name} is selected based on classical Charaka and Sushruta Samhita guidelines,
                     harvested in appropriate Ritu (season) for peak bio-potency.
                   </p>
-                  <button
-                    onClick={() => setIsExplorerOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2b3323] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#191c18] transition-colors shrink-0 self-start sm:self-auto cursor-pointer shadow-xs"
-                  >
-                    <Microscope className="w-3.5 h-3.5 text-[#dac5a7]" />
-                    <span>Microscope View</span>
-                  </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {product.ingredients.map((ing, idx) => (
@@ -563,12 +558,6 @@ export const ProductDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Botanical Herb Explorer Modal */}
-      <BotanicalHerbExplorer
-        isOpen={isExplorerOpen}
-        onClose={() => setIsExplorerOpen(false)}
-      />
     </div>
   );
 };

@@ -164,7 +164,7 @@ const INITIAL_STORE_SETTINGS: StoreSettings = {
   freeShippingThreshold: 999,
   supportEmail: 'care@riyanshamrit.com',
   supportPhone: '+91 98224 88300',
-  storeName: 'Riyansh Amrit — Luxury Ayurvedic Botanicals',
+  storeName: 'Riyansh Amrit — Luxury Ayurvedic Wellness',
   maintenanceMode: false,
   taxRatePercent: 12
 };

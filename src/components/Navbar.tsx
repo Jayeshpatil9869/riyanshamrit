@@ -188,7 +188,7 @@ export const Navbar: React.FC = () => {
                 RIYANSH AMRIT
               </span>
               <span className="text-[9.5px] xs:text-[10px] sm:text-[11px] tracking-[0.22em] sm:tracking-[0.25em] uppercase font-sans font-semibold mt-0.5 sm:mt-0 text-[#4e583c]">
-                Ayurvedic Botanicals
+                Ayurvedic Wellness
               </span>
             </Link>
           </div>

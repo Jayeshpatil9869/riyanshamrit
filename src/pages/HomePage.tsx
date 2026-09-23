@@ -12,7 +12,6 @@ import { HaikeiBackground } from '../components/ui/HaikeiBackground';
 import { FramerReveal } from '../components/motion/FramerReveal';
 import { BlurRevealItem, BlurWaveText } from '../components/motion/BlurReveal';
 import { InteractiveDoshaQuiz } from '../components/ui/InteractiveDoshaQuiz';
-import { BotanicalHerbExplorer } from '../components/ui/BotanicalHerbExplorer';
 import {
   ArrowRight,
   ShieldCheck,
@@ -34,7 +33,6 @@ export const HomePage: React.FC = () => {
 
   // Modals for rich interaction
   const [isQuizOpen, setIsQuizOpen] = useState(false);
-  const [isExplorerOpen, setIsExplorerOpen] = useState(false);
 
   // Newsletter state
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -737,10 +735,6 @@ export const HomePage: React.FC = () => {
       <InteractiveDoshaQuiz
         isOpen={isQuizOpen}
         onClose={() => setIsQuizOpen(false)}
-      />
-      <BotanicalHerbExplorer
-        isOpen={isExplorerOpen}
-        onClose={() => setIsExplorerOpen(false)}
       />
 
     </div>

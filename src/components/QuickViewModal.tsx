@@ -56,15 +56,15 @@ export const QuickViewModal: React.FC = () => {
         </button>
 
         {/* Product Media Column */}
-        <div className="w-full md:w-1/2 relative bg-[#e8e8e1] min-h-[260px] md:min-h-[440px]">
+        <div className="w-full md:w-1/2 relative bg-gradient-to-b from-[#fafaf7] to-[#edece6] min-h-[280px] md:min-h-[440px] flex items-center justify-center p-6">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain max-h-[360px] drop-shadow-[0_8px_16px_rgba(26,28,24,0.08)]"
             referrerPolicy="no-referrer"
           />
           {product.tag && (
-            <span className="absolute top-4 left-4 px-3 py-1 bg-[#1a1c18] text-[#dac5a7] rounded-full text-[10px] font-mono uppercase tracking-wider font-semibold">
+            <span className="absolute top-4 left-4 px-3 py-1 bg-[#1a1c18] text-[#dac5a7] rounded-full text-[10px] font-mono uppercase tracking-wider font-semibold shadow-xs">
               {product.tag}
             </span>
           )}
